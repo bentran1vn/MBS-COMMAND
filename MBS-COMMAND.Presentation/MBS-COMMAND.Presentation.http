@@ -1,0 +1,6 @@
+@MBS_COMMAND.Presentation_HostAddress = http://localhost:5160
+
+GET {{MBS_COMMAND.Presentation_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
