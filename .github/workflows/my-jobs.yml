@@ -34,4 +34,4 @@ jobs:
           fi
           # Run new container
           echo ":: Running new container - $CNAME"
-          docker run -d --network=MBS -p 5000:8080 --name $CNAME myapp-command:latest
+          docker run -d --network=MBS --name $CNAME myapp-command:latest
