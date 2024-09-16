@@ -10,4 +10,8 @@
       <ProjectReference Include="..\MBS_COMMAND.Application\MBS_COMMAND.Application.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="DependencyInjection\Extensions\" />
+    </ItemGroup>
+
 </Project>

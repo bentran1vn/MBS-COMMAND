@@ -11,4 +11,9 @@
       <ProjectReference Include="..\MBS_COMMAND.Contract\MBS_COMMAND.Contract.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
+      <PackageReference Include="Carter" Version="8.1.0" />
+    </ItemGroup>
+
 </Project>
