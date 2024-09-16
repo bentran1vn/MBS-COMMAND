@@ -5,7 +5,7 @@ on:
       - main
 jobs:
   build_and_deploy:
-    runs-on: [self-hosted, command]
+    runs-on: [self-hosted]
     env:
       CONTAINER_NAME: myappCommandContainer
     steps:
@@ -34,4 +34,4 @@ jobs:
           fi
           # Run new container
           echo ":: Running new container - $CNAME"
-          docker run -d -p 5000:8080 --name $CNAME myapp-command:latest
+          docker run -d --network=MBS --name $CNAME myapp-command:latest
