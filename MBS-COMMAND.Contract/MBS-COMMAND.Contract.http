@@ -1,6 +1,0 @@
-@MBS_COMMAND.Contract_HostAddress = http://localhost:5245
-
-GET {{MBS_COMMAND.Contract_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
