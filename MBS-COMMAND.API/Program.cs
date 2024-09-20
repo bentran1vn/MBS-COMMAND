@@ -1,6 +1,10 @@
 using Antree_Ecommerce_BE.API.DependencyInjection.Extensions;
 using Carter;
 using MBS_COMMAND.API.DependencyInjection.Extensions;
+using MBS_COMMAND.API.Middlewares;
+using MBS_COMMAND.Application.DependencyInjection.Extensions;
+using MBS_COMMAND.Persistence.DependencyInjection.Extensions;
+using MBS_COMMAND.Persistence.DependencyInjection.Options;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Serilog;
 
@@ -35,12 +39,27 @@ builder.Services
 
 builder.Services.ConfigureCors();
 
-// builder.Services.AddMediatRApplication();
-// builder.Services.AddAutoMapperApplication();
+// Application Layer
+builder.Services.AddMediatRApplication();
+builder.Services.AddAutoMapperApplication();
+
+// Persistence Layer
+builder.Services.AddInterceptorPersistence();
+builder.Services.ConfigureSqlServerRetryOptionsPersistence(builder.Configuration.GetSection(nameof(SqlServerRetryOptions)));
+builder.Services.AddSqlServerPersistence();
+builder.Services.AddRepositoryPersistence();
 
 builder.Services.AddJwtAuthenticationAPI(builder.Configuration);
 
+// Infrastructure Layer
+
+// Add Middleware => Remember using middleware
+builder.Services.AddTransient<ExceptionHandlingMiddleware>();
+
 var app = builder.Build();
+
+// Using middleware
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline. 
 // if (builder.Environment.IsDevelopment() || builder.Environment.IsStaging())
