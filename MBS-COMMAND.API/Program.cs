@@ -3,6 +3,7 @@ using Carter;
 using MBS_COMMAND.API.DependencyInjection.Extensions;
 using MBS_COMMAND.API.Middlewares;
 using MBS_COMMAND.Application.DependencyInjection.Extensions;
+using MBS_COMMAND.Infrastucture.DependencyInjection.Extensions;
 using MBS_COMMAND.Persistence.DependencyInjection.Extensions;
 using MBS_COMMAND.Persistence.DependencyInjection.Options;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
@@ -49,6 +50,14 @@ builder.Services.ConfigureSqlServerRetryOptionsPersistence(builder.Configuration
 builder.Services.AddSqlServerPersistence();
 builder.Services.AddRepositoryPersistence();
 
+// Infrastructure Layer
+builder.Services.AddServicesInfrastructure();
+builder.Services.AddRedisInfrastructure(builder.Configuration);
+builder.Services.AddMasstransitRabbitMQInfrastructure(builder.Configuration);
+builder.Services.AddQuartzInfrastructure();
+builder.Services.AddMediatRInfrastructure();
+
+// API Layer
 builder.Services.AddJwtAuthenticationAPI(builder.Configuration);
 
 // Infrastructure Layer
