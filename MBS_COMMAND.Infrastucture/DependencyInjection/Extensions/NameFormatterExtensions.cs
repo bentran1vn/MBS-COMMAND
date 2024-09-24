@@ -1,7 +1,7 @@
-﻿using MassTransit;
-using System.Reflection;
+﻿using System.Reflection;
+using MassTransit;
 
-namespace DistributedSystem.Infrastructure.DependencyInjection.Extensions;
+namespace MBS_COMMAND.Infrastucture.DependencyInjection.Extensions;
 
 internal static class NameFormatterExtensions
 {

@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using DistributedSystem.Infrastructure.DependencyInjection.Extensions;
 using MassTransit;
 using MBS_COMMAND.Application.Abstractions;
 using MBS_COMMAND.Contract.JsonConverters;
