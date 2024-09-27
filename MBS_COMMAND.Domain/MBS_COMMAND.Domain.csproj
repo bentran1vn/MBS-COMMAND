@@ -10,8 +10,4 @@
       <ProjectReference Include="..\MBS_COMMAND.Contract\MBS_COMMAND.Contract.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Entities\" />
-    </ItemGroup>
-
 </Project>
