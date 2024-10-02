@@ -14,6 +14,7 @@ public class Schedule : Entity<Guid>, IAuditableEntity
     public TimeOnly EndTime { get; set; }
     public DateOnly Date { get; set; }
     public Guid SubjectId { get; set; }
+    public bool IsBooked { get; set; }=false;
     public virtual Subject? Subject { get; set; }
     public DateTimeOffset CreatedOnUtc { get ; set ; }
     public DateTimeOffset? ModifiedOnUtc { get ; set ; }

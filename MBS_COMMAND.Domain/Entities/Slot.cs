@@ -10,6 +10,8 @@ public class Slot : Entity<Guid>, IAuditableEntity
     public TimeOnly StartTime { get; set; }
     public TimeOnly EndTime { get; set; }
     public DateOnly Date { get; set; }
+    public bool IsOnline { get; set; }
+    public string? Note { get; set; }
     public int Status { get; set; }
     public DateTimeOffset CreatedOnUtc { get; set; }
     public DateTimeOffset? ModifiedOnUtc { get; set; }
