@@ -8,6 +8,9 @@ public class Group : Entity<Guid>, IAuditableEntity
     public string Name { get; set; }
     public Guid? MentorId { get; set; }
     public virtual User? Mentor { get; set; }
+
+    public string? LeaderId { get; set; }
+    public virtual User? Leader { get; set; }
     public string Stack { get; set; }
     public Guid? ProjectId { get; set; }
     public virtual Project? Project { get; set; }
