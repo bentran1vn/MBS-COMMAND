@@ -20,5 +20,6 @@ internal static class TableNames
     internal const string Subject = nameof(Subject);
     internal const string Transaction = nameof(Transaction);
     internal const string User = nameof(User);
+    internal const string MentorSkills = nameof(MentorSkills);
 
 }
