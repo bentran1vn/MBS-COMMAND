@@ -1,4 +1,5 @@
 
+using MBS_COMMAND.Domain.Abstractions;
 using MBS_COMMAND.Domain.Abstractions.Repositories;
 using MBS_COMMAND.Persistence.DependencyInjection.Options;
 using MBS_COMMAND.Persistence.Interceptors;
@@ -69,6 +70,7 @@ public static class ServiceCollectionExtensions
     public static void AddRepositoryPersistence(this IServiceCollection services)
     {
         services.AddTransient(typeof(IRepositoryBase<,>), typeof(RepositoryBase<,>));
+        services.AddTransient(typeof(IUnitOfWork), typeof(EFUnitOfWork));
     }
 
     public static OptionsBuilder<SqlServerRetryOptions> ConfigureSqlServerRetryOptionsPersistence(this IServiceCollection services, IConfigurationSection section)
