@@ -30,7 +30,7 @@ public class Group : AggregateRoot<Guid>, IAuditableEntity
     public static Group Create(string name, string stack, Guid? mentorId)
     {
         var G = new Group(name, stack, mentorId);
-        G.RaiseDomainEvent(new Contract.Services.Groups.DomainEvents.GroupCreated(Guid.NewGuid(), G.Id, G.Name, G.MentorId, G.Stack));
+        //G.RaiseDomainEvent(new Contract.Services.Groups.DomainEvents.GroupCreated(Guid.NewGuid(), G.Id, G.Name, G.MentorId, G.Stack));
         return G;
     }
 
