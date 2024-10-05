@@ -1,10 +1,13 @@
 using MassTransit;
 using MBS_COMMAND.Contract.Abstractions.Messages;
+using MBS_COMMAND.Contract.Services.MentorSkills;
 using MBS_COMMAND.Persistence;
 using MBS_COMMAND.Persistence.Outbox;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Quartz;
+using MessageShared = MBS_CONTRACT.SHARE.Abstractions.Messages;
+using ServicesShared = MBS_CONTRACT.SHARE.Services;
 
 namespace MBS_COMMAND.Infrastucture.BackgroundJobs;
 
@@ -31,8 +34,8 @@ public class ProcessOutboxMessagesJob : IJob
 
         foreach (OutboxMessage outboxMessage in messages)
         {
-            IDomainEvent? domainEvent = JsonConvert
-                .DeserializeObject<IDomainEvent>(
+            MessageShared.IDomainEvent? domainEvent = JsonConvert
+                .DeserializeObject<MessageShared.IDomainEvent>(
                     outboxMessage.Content,
                     new JsonSerializerSettings
                     {
@@ -46,15 +49,25 @@ public class ProcessOutboxMessagesJob : IJob
             {
                 switch (domainEvent.GetType().Name)
                 {
-                    // case nameof(DomainEvent.ProductCreated):
-                    //     var productCreated = JsonConvert.DeserializeObject<DomainEvent.ProductCreated>(
-                    //                 outboxMessage.Content,
-                    //                 new JsonSerializerSettings
-                    //                 {
-                    //                     TypeNameHandling = TypeNameHandling.All
-                    //                 });
-                    //     await _publishEndpoint.Publish(productCreated, context.CancellationToken);
-                    //     break;
+                    case nameof(ServicesShared.MentorSkills.DomainEvent.MentorSkillsCreated):
+                        var mentorSkillsCreated = JsonConvert.DeserializeObject<ServicesShared.MentorSkills.DomainEvent.MentorSkillsCreated>(
+                                    outboxMessage.Content,
+                                    new JsonSerializerSettings
+                                    {
+                                        TypeNameHandling = TypeNameHandling.All
+                                    });
+                        await _publishEndpoint.Publish(mentorSkillsCreated, context.CancellationToken);
+                        break;
+                    
+                    case nameof(ServicesShared.Mentors.DomainEvent.MentorCreated):
+                        var mentorCreated = JsonConvert.DeserializeObject<ServicesShared.Mentors.DomainEvent.MentorCreated>(
+                            outboxMessage.Content,
+                            new JsonSerializerSettings
+                            {
+                                TypeNameHandling = TypeNameHandling.All
+                            });
+                        await _publishEndpoint.Publish(mentorCreated, context.CancellationToken);
+                        break;
 
                     // case nameof(DomainEvent.ProductUpdated):
                     //     var productUpdated = JsonConvert.DeserializeObject<DomainEvent.ProductUpdated>(

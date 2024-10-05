@@ -4,9 +4,11 @@ using MBS_COMMAND.API.DependencyInjection.Extensions;
 using MBS_COMMAND.API.Middlewares;
 using MBS_COMMAND.Application.DependencyInjection.Extensions;
 using MBS_COMMAND.Infrastucture.DependencyInjection.Extensions;
+using MBS_COMMAND.Infrastucture.DependencyInjection.Options;
 using MBS_COMMAND.Persistence.DependencyInjection.Extensions;
 using MBS_COMMAND.Persistence.DependencyInjection.Options;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Http.Features;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,6 +46,13 @@ builder.Services.ConfigureCors();
 builder.Services.AddMediatRApplication();
 builder.Services.AddAutoMapperApplication();
 
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.ValueLengthLimit = int.MaxValue;
+    options.MultipartBodyLengthLimit = long.MaxValue;
+    options.MultipartHeadersLengthLimit = int.MaxValue;
+});
+
 // Persistence Layer
 builder.Services.AddInterceptorPersistence();
 builder.Services.ConfigureSqlServerRetryOptionsPersistence(builder.Configuration.GetSection(nameof(SqlServerRetryOptions)));
@@ -61,6 +70,9 @@ builder.Services.AddMediatRInfrastructure();
 builder.Services.AddJwtAuthenticationAPI(builder.Configuration);
 
 // Infrastructure Layer
+builder.Services.AddServicesInfrastructure();
+builder.Services.AddRedisInfrastructure(builder.Configuration);
+builder.Services.ConfigureCloudinaryOptionsInfrastucture(builder.Configuration.GetSection(nameof(CloudinaryOptions)));
 
 // Add Middleware => Remember using middleware
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
