@@ -28,5 +28,6 @@ public class ApplicationDbContext : DbContext
     public virtual DbSet<Subject> Subjects { get; set; }
     public virtual DbSet<Transaction> Transactions { get; set; }
     public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<MentorSkills> MentorSkillses { get; set; }
 
 }

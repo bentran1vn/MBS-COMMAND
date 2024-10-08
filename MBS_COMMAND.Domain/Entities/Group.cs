@@ -17,7 +17,6 @@ public class Group : Entity<Guid>, IAuditableEntity
     public virtual Project? Project { get; set; }
     public DateTimeOffset CreatedOnUtc { get; set; }
     public DateTimeOffset? ModifiedOnUtc { get; set; }
-    
 
 }
 

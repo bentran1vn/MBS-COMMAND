@@ -30,12 +30,12 @@ public class RepositoryBase<TEntity, TKey> : IRepositoryBase<TEntity, TKey>, IDi
         return items;
     }
 
-    public async Task<TEntity> FindByIdAsync(TKey id, CancellationToken cancellationToken = default, params Expression<Func<TEntity, object>>[] includeProperties)
+    public async Task<TEntity?> FindByIdAsync(TKey id, CancellationToken cancellationToken = default, params Expression<Func<TEntity, object>>[] includeProperties)
         => await FindAll(null, includeProperties)
             .AsTracking()
             .SingleOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
 
-    public async Task<TEntity> FindSingleAsync(Expression<Func<TEntity, bool>>? predicate = null, CancellationToken cancellationToken = default, params Expression<Func<TEntity, object>>[] includeProperties)
+    public async Task<TEntity?> FindSingleAsync(Expression<Func<TEntity, bool>>? predicate = null, CancellationToken cancellationToken = default, params Expression<Func<TEntity, object>>[] includeProperties)
         => await FindAll(null, includeProperties)
             .AsTracking()
             .SingleOrDefaultAsync(predicate, cancellationToken);
@@ -43,6 +43,13 @@ public class RepositoryBase<TEntity, TKey> : IRepositoryBase<TEntity, TKey>, IDi
     public void Add(TEntity entity)
         => _dbContext.Add(entity);
 
+    
+    public void AddRange(IEnumerable<TEntity> entities)
+        => _dbContext.AddRange(entities);
+
+    public void UpdateRange(IEnumerable<TEntity> entities)
+        => _dbContext.UpdateRange(entities);
+    
     public void Remove(TEntity entity)
         => _dbContext.Set<TEntity>().Remove(entity);
 

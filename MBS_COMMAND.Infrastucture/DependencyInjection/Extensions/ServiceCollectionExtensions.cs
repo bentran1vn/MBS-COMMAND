@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using CloudinaryDotNet;
 using MassTransit;
 using MBS_COMMAND.Application.Abstractions;
 using MBS_COMMAND.Contract.JsonConverters;
@@ -10,24 +11,24 @@ using Quartz;
 using MBS_COMMAND.Infrastucture.Caching;
 using MBS_COMMAND.Infrastucture.DependencyInjection.Options;
 using MBS_COMMAND.Infrastucture.PipeObservers;
+using MBS_COMMAND.Infrastucture.Media;
+using Microsoft.Extensions.Options;
 
 namespace MBS_COMMAND.Infrastucture.DependencyInjection.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    // Configure MongoDB
-    // public static void ConfigureServicesInfrastructure(this IServiceCollection services, IConfiguration configuration)
-    // {
-    //     services.Configure<MongoDbSettings>(configuration.GetSection(nameof(MongoDbSettings)));
-    //
-    //     services.AddSingleton<IMongoDbSettings>(serviceProvider =>
-    //         serviceProvider.GetRequiredService<IOptions<MongoDbSettings>>().Value);
-    //
-    //     services.AddScoped(typeof(IMongoRepository<>), typeof(MongoRepository<>));
-    // }
-
     public static void AddServicesInfrastructure(this IServiceCollection services)
-        => services.AddTransient<ICacheService, CacheService>();
+        => services.AddTransient<ICacheService, CacheService>()
+            .AddTransient<IMediaService, CloudinaryService>()
+            .AddSingleton<Cloudinary>((provider) =>
+            {
+                var options = provider.GetRequiredService<IOptionsMonitor<CloudinaryOptions>>();
+                return new Cloudinary(new Account(
+                    options.CurrentValue.CloudName,
+                    options.CurrentValue.ApiKey,
+                    options.CurrentValue.ApiSecret));
+            });
     
     // Configure Redis
     public static void AddRedisInfrastructure(this IServiceCollection services, IConfiguration configuration)
@@ -128,6 +129,13 @@ public static class ServiceCollectionExtensions
     
         services.AddQuartzHostedService();
     }
+    
+    public static OptionsBuilder<CloudinaryOptions> ConfigureCloudinaryOptionsInfrastucture(this IServiceCollection services, IConfigurationSection section)
+        => services
+            .AddOptions<CloudinaryOptions>()
+            .Bind(section)
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
     
     // Configure MediatR
     public static void AddMediatRInfrastructure(this IServiceCollection services)
