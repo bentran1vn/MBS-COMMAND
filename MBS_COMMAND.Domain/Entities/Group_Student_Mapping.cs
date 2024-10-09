@@ -1,6 +1,4 @@
-﻿using MBS_AUTHORIZATION.Domain.Entities;
-
-namespace MBS_COMMAND.Domain.Entities;
+﻿namespace MBS_COMMAND.Domain.Entities;
 
 public class Group_Student_Mapping
 {

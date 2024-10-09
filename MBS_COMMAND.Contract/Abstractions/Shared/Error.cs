@@ -12,7 +12,6 @@ public class Error : IEquatable<Error>
     }
     public string Code { get; }
     public string Message { get; }
-
     public static implicit operator string(Error error) => error.Code;
 
     public static bool operator ==(Error? a, Error? b)

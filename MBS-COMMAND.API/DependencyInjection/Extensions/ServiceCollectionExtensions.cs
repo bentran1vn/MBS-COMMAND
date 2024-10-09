@@ -1,4 +1,4 @@
-namespace Antree_Ecommerce_BE.API.DependencyInjection.Extensions;
+namespace MBS_COMMAND.API.DependencyInjection.Extensions;
 
 public static class ServiceCollectionExtensions
 {
