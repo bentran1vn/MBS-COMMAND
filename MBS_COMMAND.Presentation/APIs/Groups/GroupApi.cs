@@ -16,11 +16,47 @@ public class GroupApi : ApiEndpoint, ICarterModule
     {
         var gr1 = app.NewVersionedApi("Groups")
              .MapGroup(BaseUrl).HasApiVersion(1);
-        gr1.MapPost("", CreateGroup);
+        gr1.MapPost(string.Empty, CreateGroup);
+        gr1.MapPost("add-list-member", AddListMemberToGroup).WithSummary("add many at the time");
+        gr1.MapDelete("remove-list-member", RemoveListMemberFromGroup).WithSummary("remove many at the time");
+        gr1.MapPost("add-member", AddMemberToGroup);
+        gr1.MapDelete("remove-member", RemoveMemberFromGroup);
     }
 
 
     public static async Task<IResult> CreateGroup(ISender sender, [FromBody] Command.CreateGroupCommand request)
+    {
+        var result = await sender.Send(request);
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
+    public static async Task<IResult> AddListMemberToGroup(ISender sender, [FromBody] Command.AddListMemberToGroup request)
+    {
+        var result = await sender.Send(request);
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
+    public static async Task<IResult> RemoveListMemberFromGroup(ISender sender, [FromBody] Command.RemoveListMemberFromGroup request)
+    {
+        var result = await sender.Send(request);
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
+    public static async Task<IResult> AddMemberToGroup(ISender sender, [FromBody] Command.AddMemberToGroup request)
+    {
+        var result = await sender.Send(request);
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
+    public static async Task<IResult> RemoveMemberFromGroup(ISender sender, [FromBody] Command.RemoveMemberFromGroup request)
     {
         var result = await sender.Send(request);
         if (result.IsFailure)

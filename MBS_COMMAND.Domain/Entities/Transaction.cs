@@ -1,5 +1,4 @@
-﻿using MBS_AUTHORIZATION.Domain.Entities;
-using MBS_COMMAND.Domain.Abstractions.Entities;
+﻿using MBS_COMMAND.Domain.Abstractions.Entities;
 
 namespace MBS_COMMAND.Domain.Entities;
 

@@ -1,4 +1,3 @@
-using MBS_AUTHORIZATION.Domain.Entities;
 using MBS_COMMAND.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 

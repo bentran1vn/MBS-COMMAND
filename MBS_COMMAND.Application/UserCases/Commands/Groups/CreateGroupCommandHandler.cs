@@ -1,5 +1,4 @@
-﻿using MBS_AUTHORIZATION.Domain.Entities;
-using MBS_COMMAND.Contract.Abstractions.Messages;
+﻿using MBS_COMMAND.Contract.Abstractions.Messages;
 using MBS_COMMAND.Contract.Abstractions.Shared;
 using MBS_COMMAND.Contract.Services.Groups;
 using MBS_COMMAND.Domain.Abstractions.Repositories;
@@ -16,6 +15,7 @@ public sealed class CreateGroupCommandHandler : ICommandHandler<Command.CreateGr
     {
         _groupRepository = repositoryBase;
         _userRepository = userRepository;
+
     }
 
     public async Task<Result> Handle(Command.CreateGroupCommand request, CancellationToken cancellationToken)
@@ -30,7 +30,9 @@ public sealed class CreateGroupCommandHandler : ICommandHandler<Command.CreateGr
             Stack = request.Stacks,
 
         };
+        G.Members!.Add(new Group_Student_Mapping { StudentId = M.Id, GroupId = G.Id });
         _groupRepository.Add(G);
+
         return Result.Success();
     }
 }

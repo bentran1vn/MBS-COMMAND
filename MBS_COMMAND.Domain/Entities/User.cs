@@ -1,9 +1,10 @@
-﻿using MBS_COMMAND.Domain.Abstractions.Entities;
+﻿using MBS_COMMAND.Domain.Abstractions.Aggregates;
+using MBS_COMMAND.Domain.Abstractions.Entities;
 using MBS_COMMAND.Domain.Entities;
 
-namespace MBS_AUTHORIZATION.Domain.Entities;
+namespace MBS_COMMAND.Domain.Entities;
 
-public class User : Entity<Guid>, IAuditableEntity
+public class User : AggregateRoot<Guid>, IAuditableEntity
 {
     public string Email { get; set; }
     public string? FullName { get; set; }
@@ -16,5 +17,10 @@ public class User : Entity<Guid>, IAuditableEntity
     public virtual User? Mentor { get; set; }
     public DateTimeOffset CreatedOnUtc { get; set; }
     public DateTimeOffset? ModifiedOnUtc { get; set; }
+
+    public virtual ICollection<Group_Student_Mapping>? Groups { get; set; } = [];
+
+
+
     public virtual IReadOnlyCollection<MentorSkills> MentorSkillsList { get; set; } = default!;
 }
