@@ -16,6 +16,7 @@
 
     <ItemGroup>
       <PackageReference Include="CloudinaryDotNet" Version="1.26.2" />
+      <PackageReference Include="MailKit" Version="4.8.0" />
       <PackageReference Include="MassTransit" Version="8.2.5" />
       <PackageReference Include="MassTransit.Newtonsoft" Version="8.2.5" />
       <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.5" />

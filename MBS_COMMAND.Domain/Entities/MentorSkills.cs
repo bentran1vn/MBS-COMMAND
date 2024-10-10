@@ -1,5 +1,3 @@
-using MBS_AUTHORIZATION.Domain.Entities;
-using MBS_COMMAND.Contract.Services.MentorSkills;
 using MBS_COMMAND.Domain.Abstractions.Aggregates;
 using MBS_COMMAND.Domain.Abstractions.Entities;
 using DomainEventShared = MBS_CONTRACT.SHARE.Services.Mentors.DomainEvent;
