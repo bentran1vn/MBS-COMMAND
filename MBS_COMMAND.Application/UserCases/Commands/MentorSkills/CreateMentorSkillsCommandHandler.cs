@@ -1,4 +1,4 @@
-using MBS_AUTHORIZATION.Domain.Entities;
+
 using MBS_COMMAND.Application.Abstractions;
 using MBS_COMMAND.Contract.Abstractions.Messages;
 using MBS_COMMAND.Contract.Abstractions.Shared;
