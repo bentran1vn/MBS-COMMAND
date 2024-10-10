@@ -4,5 +4,5 @@ namespace MBS_COMMAND.Contract.Services.Mentors;
 
 public class Command
 {
-    public record CreateMentorCommand(string Name, decimal Price, string Description) : ICommand;
+    public record CreateMentorCommand(Guid MentorId) : ICommand;
 }
