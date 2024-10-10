@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Quartz;
 using MBS_COMMAND.Infrastucture.Caching;
+using MBS_COMMAND.Infrastucture.Mail;
 using MBS_COMMAND.Infrastucture.DependencyInjection.Options;
 using MBS_COMMAND.Infrastucture.PipeObservers;
 using MBS_COMMAND.Infrastucture.Media;
@@ -19,8 +20,10 @@ namespace MBS_COMMAND.Infrastucture.DependencyInjection.Extensions;
 public static class ServiceCollectionExtensions
 {
     public static void AddServicesInfrastructure(this IServiceCollection services)
-        => services.AddTransient<ICacheService, CacheService>()
-            .AddTransient<IMediaService, CloudinaryService>()
+        => services
+            .AddTransient<ICacheService, CacheService>()
+            .AddSingleton<IMediaService, CloudinaryService>()
+            .AddSingleton<IMailService, MailService>()
             .AddSingleton<Cloudinary>((provider) =>
             {
                 var options = provider.GetRequiredService<IOptionsMonitor<CloudinaryOptions>>();
@@ -133,6 +136,13 @@ public static class ServiceCollectionExtensions
     public static OptionsBuilder<CloudinaryOptions> ConfigureCloudinaryOptionsInfrastucture(this IServiceCollection services, IConfigurationSection section)
         => services
             .AddOptions<CloudinaryOptions>()
+            .Bind(section)
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+    
+    public static OptionsBuilder<MailOption> ConfigureMailOptionsInfrastucture(this IServiceCollection services, IConfigurationSection section)
+        => services
+            .AddOptions<MailOption>()
             .Bind(section)
             .ValidateDataAnnotations()
             .ValidateOnStart();
