@@ -1,8 +1,8 @@
-using Antree_Ecommerce_BE.API.DependencyInjection.Extensions;
 using Carter;
 using MBS_COMMAND.API.DependencyInjection.Extensions;
 using MBS_COMMAND.API.Middlewares;
 using MBS_COMMAND.Application.DependencyInjection.Extensions;
+using MBS_COMMAND.Domain.Abstractions.Repositories;
 using MBS_COMMAND.Infrastucture.DependencyInjection.Extensions;
 using MBS_COMMAND.Infrastucture.DependencyInjection.Options;
 using MBS_COMMAND.Persistence.DependencyInjection.Extensions;
@@ -77,6 +77,8 @@ builder.Services.ConfigureMailOptionsInfrastucture(builder.Configuration.GetSect
 
 // Add Middleware => Remember using middleware
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
+builder.Services.AddTransient<ICurrentUserService,CurrentUserService>();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
