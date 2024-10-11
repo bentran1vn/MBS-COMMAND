@@ -6,26 +6,25 @@ using MimeKit;
 
 namespace MBS_COMMAND.Infrastucture.Mail;
 
-public class MailService : IMailService
+public class MailService(IOptions<MailOption> mailOptions) : IMailService
 {
-    private readonly MailOption _mailOptions;
-
-    public MailService(IOptions<MailOption> mailOptions)
-    {
-        _mailOptions = mailOptions.Value;
-    }
+    private readonly MailOption _mailOptions = mailOptions.Value;
 
     public async Task SendMail(MailContent mailContent)
     {
-        MimeMessage email = new();
-        email.Sender = new MailboxAddress(_mailOptions?.DisplayName, _mailOptions?.Mail);
+        MimeMessage email = new()
+        {
+            Sender = new MailboxAddress(_mailOptions?.DisplayName, _mailOptions?.Mail)
+        };
         email.From.Add(new MailboxAddress(_mailOptions?.DisplayName, _mailOptions?.Mail));
         email.To.Add(MailboxAddress.Parse(mailContent.To));
         email.Subject = mailContent.Subject;
 
 
-        BodyBuilder builder = new();
-        builder.HtmlBody = mailContent.Body;
+        BodyBuilder builder = new()
+        {
+            HtmlBody = mailContent.Body,        
+        };
         email.Body = builder.ToMessageBody();
 
         // dùng SmtpClient của MailKit

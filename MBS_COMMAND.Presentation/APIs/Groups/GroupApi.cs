@@ -1,4 +1,5 @@
 ﻿using Carter;
+using MBS_COMMAND.Application.UserCases.Commands.Groups;
 using MBS_COMMAND.Contract.Services.Groups;
 using MBS_COMMAND.Presentation.Abstractions;
 using MediatR;
@@ -14,33 +15,23 @@ public class GroupApi : ApiEndpoint, ICarterModule
     private const string BaseUrl = "/api/v{version:apiVersion}/groups";
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var gr1 = app.NewVersionedApi("Groups")
-             .MapGroup(BaseUrl).HasApiVersion(1);
-        gr1.MapPost(string.Empty, CreateGroup);
-        gr1.MapPost("add-list-member", AddListMemberToGroup).WithSummary("add many at the time");
-        gr1.MapDelete("remove-list-member", RemoveListMemberFromGroup).WithSummary("remove many at the time");
-        gr1.MapPost("add-member", AddMemberToGroup);
-        gr1.MapDelete("remove-member", RemoveMemberFromGroup);
+        var gr1 = app.NewVersionedApi("Groups").MapGroup(BaseUrl).HasApiVersion(1);
+        gr1.MapPost(string.Empty, CreateGroup).RequireAuthorization();
+        gr1.MapPost("member", AddMemberToGroup);
+        gr1.MapDelete("member", RemoveMemberFromGroup);
+        gr1.MapPut("change-leader", ChangeLeader).WithSummary("must login in order to use this api");
     }
 
+    public static async Task<IResult> ChangeLeader(ISender sender, [FromBody] Command.ChangeLeader request)
+    {
+        var result = await sender.Send(request);
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
 
     public static async Task<IResult> CreateGroup(ISender sender, [FromBody] Command.CreateGroupCommand request)
-    {
-        var result = await sender.Send(request);
-        if (result.IsFailure)
-            return HandlerFailure(result);
-
-        return Results.Ok(result);
-    }
-    public static async Task<IResult> AddListMemberToGroup(ISender sender, [FromBody] Command.AddListMemberToGroup request)
-    {
-        var result = await sender.Send(request);
-        if (result.IsFailure)
-            return HandlerFailure(result);
-
-        return Results.Ok(result);
-    }
-    public static async Task<IResult> RemoveListMemberFromGroup(ISender sender, [FromBody] Command.RemoveListMemberFromGroup request)
     {
         var result = await sender.Send(request);
         if (result.IsFailure)
@@ -64,4 +55,5 @@ public class GroupApi : ApiEndpoint, ICarterModule
 
         return Results.Ok(result);
     }
+
 }

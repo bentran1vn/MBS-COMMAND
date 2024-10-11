@@ -6,18 +6,11 @@ using MBS_COMMAND.Domain.Entities;
 
 namespace MBS_COMMAND.Application.UserCases.Commands.Users;
 
-public sealed class CreateMentorCommandHandler : ICommandHandler<Command.CreateMentorCommand>
+public sealed class CreateMentorCommandHandler(IRepositoryBase<User, Guid> repository) : ICommandHandler<Command.CreateMentorCommand>
 {
-    private readonly IRepositoryBase<User, Guid> _repository;
-
-    public CreateMentorCommandHandler(IRepositoryBase<User, Guid> repository)
-    {
-        _repository = repository;
-    }
-
     public async Task<Result> Handle(Command.CreateMentorCommand request, CancellationToken cancellationToken)
     {
-        var Mentor = await _repository.FindByIdAsync(request.MentorId, cancellationToken);
+        var Mentor = await repository.FindByIdAsync(request.MentorId, cancellationToken);
         if (Mentor == null)
         {
             return Result.Failure(new Error("404", "Mentor Not Existed !"));
