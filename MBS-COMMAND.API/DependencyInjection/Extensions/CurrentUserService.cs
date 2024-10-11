@@ -1,20 +1,13 @@
 ﻿using MBS_COMMAND.Domain.Abstractions.Repositories;
-using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
 namespace MBS_COMMAND.API.DependencyInjection.Extensions;
 
-public class CurrentUserService : ICurrentUserService
+public class CurrentUserService(IHttpContextAccessor httpContextAccessor) : ICurrentUserService
 {
-    private readonly ClaimsPrincipal? _claimsPrincipal;
+    private readonly ClaimsPrincipal? _claimsPrincipal = httpContextAccessor?.HttpContext?.User;
 
-    public CurrentUserService(IHttpContextAccessor httpContextAccessor)
-    {
-        _claimsPrincipal = httpContextAccessor?.HttpContext?.User;
-       
-    }
-
-    public string? UserId => _claimsPrincipal?.FindFirstValue(ClaimTypes.NameIdentifier);
+    public string? UserId => _claimsPrincipal?.FindFirstValue("UserId");
 
     public string? UserName => _claimsPrincipal?.FindFirstValue(ClaimTypes.Name);
 

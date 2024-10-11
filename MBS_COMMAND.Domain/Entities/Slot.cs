@@ -11,6 +11,7 @@ public class Slot : Entity<Guid>, IAuditableEntity
     public DateOnly Date { get; set; }
     public bool IsOnline { get; set; }
     public string? Note { get; set; }
+    public short? Month { get; set; }
     public int Status { get; set; }
     public DateTimeOffset CreatedOnUtc { get; set; }
     public DateTimeOffset? ModifiedOnUtc { get; set; }

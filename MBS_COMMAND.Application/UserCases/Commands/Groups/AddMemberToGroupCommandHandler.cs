@@ -1,4 +1,5 @@
-﻿using MBS_COMMAND.Contract.Abstractions.Messages;
+﻿using MBS_COMMAND.Application.Abstractions;
+using MBS_COMMAND.Contract.Abstractions.Messages;
 using MBS_COMMAND.Contract.Abstractions.Shared;
 using MBS_COMMAND.Contract.Services.Groups;
 using MBS_COMMAND.Domain.Abstractions;
@@ -7,7 +8,7 @@ using MBS_COMMAND.Domain.Entities;
 
 namespace MBS_COMMAND.Application.UserCases.Commands.Groups;
 
-public sealed class AddMemberToGroupCommandHandler(IRepositoryBase<Group, Guid> groupRepository, IRepositoryBase<User, Guid> userRepository, IUnitOfWork unitOfWork) : ICommandHandler<Command.AddMemberToGroup>
+public sealed class AddMemberToGroupCommandHandler(IRepositoryBase<Group, Guid> groupRepository, IRepositoryBase<User, Guid> userRepository, IUnitOfWork unitOfWork, IMailService mailService) : ICommandHandler<Command.AddMemberToGroup>
 {
     public async Task<Result> Handle(Command.AddMemberToGroup request, CancellationToken cancellationToken)
     {
@@ -21,7 +22,15 @@ public sealed class AddMemberToGroupCommandHandler(IRepositoryBase<Group, Guid> 
             return Result.Failure(new Error("422", "Member already joined group"));
         G.Members!.Add(new Group_Student_Mapping { StudentId = U.Id, GroupId = G.Id });
         groupRepository.Update(G);
+        await mailService.SendMail(new MailContent
+        {
+            To = U.Email,
+            Subject = "Join Group",
+            Body = $"You have been invited to group {G.Name}"
+        });
         await unitOfWork.SaveChangesAsync(cancellationToken);
+        //send mail to user
+        
         return Result.Success();
     }
 }
