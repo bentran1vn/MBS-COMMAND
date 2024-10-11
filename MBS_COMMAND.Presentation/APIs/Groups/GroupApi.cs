@@ -1,12 +1,5 @@
-﻿using Carter;
-using MBS_COMMAND.Application.UserCases.Commands.Groups;
-using MBS_COMMAND.Contract.Services.Groups;
+﻿using MBS_COMMAND.Contract.Services.Groups;
 using MBS_COMMAND.Presentation.Abstractions;
-using MediatR;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 
 namespace MBS_COMMAND.Presentation.APIs.Groups;
 
