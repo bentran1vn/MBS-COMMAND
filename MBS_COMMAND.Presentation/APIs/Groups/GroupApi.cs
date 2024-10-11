@@ -20,8 +20,16 @@ public class GroupApi : ApiEndpoint, ICarterModule
         gr1.MapPost("member", AddMemberToGroup);
         gr1.MapDelete("member", RemoveMemberFromGroup);
         gr1.MapPut("change-leader", ChangeLeader).WithSummary("must login in order to use this api");
+        gr1.MapPut(string.Empty, UpdateGroup);
     }
+    public static async Task<IResult> UpdateGroup(ISender sender, [FromBody] Command.UpdateGroup updateGroup)
+    {
+        var result = await sender.Send(updateGroup);
+        if (result.IsFailure)
+            return HandlerFailure(result);
 
+        return Results.Ok(result);
+    }
     public static async Task<IResult> ChangeLeader(ISender sender, [FromBody] Command.ChangeLeader request)
     {
         var result = await sender.Send(request);
