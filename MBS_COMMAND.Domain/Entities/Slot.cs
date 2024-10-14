@@ -12,7 +12,7 @@ public class Slot : Entity<Guid>, IAuditableEntity
     public bool IsOnline { get; set; }
     public string? Note { get; set; }
     public short? Month { get; set; }
-    public int Status { get; set; }
+    public bool IsBook { get; set; } = false;
     public DateTimeOffset CreatedOnUtc { get; set; }
     public DateTimeOffset? ModifiedOnUtc { get; set; }
 }

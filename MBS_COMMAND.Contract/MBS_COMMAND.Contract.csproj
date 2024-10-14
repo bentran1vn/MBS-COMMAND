@@ -20,7 +20,6 @@
 
     <ItemGroup>
       <Folder Include="Services\MentorSkills\Validators\" />
-      <Folder Include="Services\Slots\" />
       <Folder Include="Services\Users\Validators\" />
     </ItemGroup>
 
