@@ -1,4 +1,5 @@
 using MBS_COMMAND.Application.Abstractions;
+using MBS_COMMAND.Application.DependencyInjection.Extensions;
 using MBS_COMMAND.Contract.Abstractions.Messages;
 using MBS_COMMAND.Contract.Abstractions.Shared;
 using MBS_COMMAND.Contract.Services.MentorSkills;
@@ -14,14 +15,16 @@ public class CreateMentorSkillsCommandHandler : ICommandHandler<Command.CreateMe
     private readonly IRepositoryBase<User, Guid> _userRepository;
     private readonly IRepositoryBase<Certificate, Guid> _cetificateRepository;
     private readonly IMediaService _mediaService;
+    private readonly IMailService _mailService;
 
-    public CreateMentorSkillsCommandHandler(IRepositoryBase<Domain.Entities.MentorSkills, Guid> mentorSkillsRepository, IRepositoryBase<Skill, Guid> skillsRepository, IMediaService mediaService, IRepositoryBase<Certificate, Guid> cetificateRepository, IRepositoryBase<User, Guid> userRepository)
+    public CreateMentorSkillsCommandHandler(IRepositoryBase<Domain.Entities.MentorSkills, Guid> mentorSkillsRepository, IRepositoryBase<Skill, Guid> skillsRepository, IMediaService mediaService, IRepositoryBase<Certificate, Guid> cetificateRepository, IRepositoryBase<User, Guid> userRepository, IMailService mailService)
     {
         _mentorSkillsRepository = mentorSkillsRepository;
         _skillsRepository = skillsRepository;
         _mediaService = mediaService;
         _cetificateRepository = cetificateRepository;
         _userRepository = userRepository;
+        _mailService = mailService;
     }
 
     public async Task<Result> Handle(Command.CreateMentorSkillsCommand request, CancellationToken cancellationToken)
@@ -58,7 +61,15 @@ public class CreateMentorSkillsCommandHandler : ICommandHandler<Command.CreateMe
         _cetificateRepository.AddRange(certificates);
         
         // mentorSkill.CreateMentor(mentor);
-        mentorSkill.CreateMentorSkills(mentor.Id, skill, certificates);
+        
+        await _mailService.SendMail(new MailContent()
+        {
+            Body = "DITME MAY NGHI",
+            Subject = "XIN CHAO QUY KHACH",
+            To = "tan182205@gmail.com"
+        });
+        
+        // await _mailService.SendMail(EmailExtensions.ForgotPasswordBody("randomNumber", $"USERNAME", "request.Email"));
 
         return Result.Success("Adding Skill For Mentor Successfully !");
     }
