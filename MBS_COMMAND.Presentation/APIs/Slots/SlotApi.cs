@@ -7,11 +7,11 @@ public class SlotApi : ApiEndpoint,ICarterModule
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         var gr1 = app.NewVersionedApi("Slots").MapGroup(BaseUrl).HasApiVersion(1);
-        gr1.MapPost(string.Empty, CreateSlot);
+        gr1.MapPost(string.Empty, CreateSlot).WithSummary("mm/dd/yyyy");
     }
-    public static async Task<IResult> CreateSlot(ISender sender, Command.CreateSlot createSlot)
+    public static async Task<IResult> CreateSlot(ISender sender, Command.CreateSlot command)
     {
-        var result = await sender.Send(createSlot);
+        var result = await sender.Send(command);
         if (result.IsFailure)
             return HandlerFailure(result);
 
