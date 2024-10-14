@@ -69,7 +69,7 @@ public class CreateMentorSkillsCommandHandler : ICommandHandler<Command.CreateMe
             To = "tan182205@gmail.com"
         });
         
-        await _mailService.SendMail(EmailExtensions.ForgotPasswordBody("randomNumber", $"USERNAME", "request.Email"));
+        // await _mailService.SendMail(EmailExtensions.ForgotPasswordBody("randomNumber", $"USERNAME", "request.Email"));
 
         return Result.Success("Adding Skill For Mentor Successfully !");
     }
