@@ -1,10 +1,9 @@
 name: CI/CD Pipeline
 
 on:
-  # push:
-  #   branches:
-  #     - '*'         # Matches every branch
-  #     - '!main'     # Excludes main branch
+  push:
+    branches:
+      - main
   pull_request:
     types:
       - closed
