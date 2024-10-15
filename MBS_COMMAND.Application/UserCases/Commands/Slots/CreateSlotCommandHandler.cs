@@ -49,7 +49,7 @@ public sealed class CreateSlotCommandHandler(
         }
 
         slotRepository.AddRange(newSlots);
-        mentor.CreateSlot(newSlots, mentor.Id);
+        mentor.CreateSlot(mentor.Slots, mentor.Id);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         
         return Result.Success();

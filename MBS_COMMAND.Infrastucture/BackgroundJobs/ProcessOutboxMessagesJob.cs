@@ -69,6 +69,15 @@ public class ProcessOutboxMessagesJob : IJob
                         await _publishEndpoint.Publish(mentorCreated, context.CancellationToken);
                         break;
 
+                    case nameof(ServicesShared.Users.DomainEvent.MentorSlotCreated):
+                        var mentorUpdated = JsonConvert.DeserializeObject<ServicesShared.Users.DomainEvent.MentorSlotCreated>(
+                            outboxMessage.Content,
+                            new JsonSerializerSettings
+                            {
+                                TypeNameHandling = TypeNameHandling.All
+                            });
+                        await _publishEndpoint.Publish(mentorUpdated, context.CancellationToken);
+                        break;
                     // case nameof(DomainEvent.ProductUpdated):
                     //     var productUpdated = JsonConvert.DeserializeObject<DomainEvent.ProductUpdated>(
                     //                 outboxMessage.Content,

@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="MBS_CONTRACT.SHARE" Version="1.1.6" />
+      <PackageReference Include="MBS_CONTRACT.SHARE" Version="1.1.9" />
     </ItemGroup>
 
     <ItemGroup>

@@ -18,6 +18,7 @@ public class User : AggregateRoot<Guid>, IAuditableEntity
     public virtual User? Mentor { get; set; }
     public virtual ICollection<Group_Student_Mapping>? Groups { get; set; } = [];
     public virtual IReadOnlyCollection<MentorSkills> MentorSkillsList { get; set; } = default!;
+    public virtual ICollection<Slot> Slots { get; set; } = [];
     public DateTimeOffset CreatedOnUtc { get; set; }
     public DateTimeOffset? ModifiedOnUtc { get; set; }
 
@@ -33,6 +34,7 @@ public class User : AggregateRoot<Guid>, IAuditableEntity
     {
         var slot = slots.Select(x => new DomainEvent.Slot
         {
+            Id = x.Id,
             MentorId = x.MentorId,
             StartTime = x.StartTime,
             EndTime = x.EndTime,
@@ -41,9 +43,7 @@ public class User : AggregateRoot<Guid>, IAuditableEntity
             Note = x.Note,
             Month = x.Month,
             IsBook = x.IsBook,
-            CreatedOnUtc = x.CreatedOnUtc,
-            ModifiedOnUtc = x.ModifiedOnUtc
         }).ToList();
-        RaiseDomainEvent(new DomainEvent.SlotsCreated(Guid.NewGuid(), slot, MentorID));
+        RaiseDomainEvent(new DomainEvent.MentorSlotCreated(Guid.NewGuid(), slot, MentorID));
     }
 }
