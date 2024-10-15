@@ -7,11 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\MBS_COMMAND.Contract\MBS_COMMAND.Contract.csproj" />
+      <PackageReference Include="MBS_CONTRACT.SHARE" Version="1.1.6" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="MBS_CONTRACT.SHARE" Version="1.0.0" />
+      <ProjectReference Include="..\MBS_COMMAND.Contract\MBS_COMMAND.Contract.csproj" />
     </ItemGroup>
 
 </Project>

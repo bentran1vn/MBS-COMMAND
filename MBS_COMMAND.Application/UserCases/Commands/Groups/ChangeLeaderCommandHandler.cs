@@ -11,7 +11,7 @@ public class ChangeLeaderCommandHandler(IRepositoryBase<User, Guid> userReposito
 {
     public async Task<Result> Handle(Command.ChangeLeader request, CancellationToken cancellationToken)
     {
-        var group = await groupRepository.FindByIdAsync(request.GroupId);
+        var group = await groupRepository.FindByIdAsync(request.GroupId, cancellationToken);
         if (group == null)
         {
             return Result.Failure(new Error("404", "User Not Found"));
@@ -20,7 +20,7 @@ public class ChangeLeaderCommandHandler(IRepositoryBase<User, Guid> userReposito
         {
             return Result.Failure(new Error("403", "You are not allowed to change the leader"));
         }
-        var newLeader = await userRepository.FindByIdAsync(request.NewLeaderId);
+        var newLeader = await userRepository.FindByIdAsync(request.NewLeaderId, cancellationToken);
         if (newLeader == null)
         {
             return Result.Failure(new Error("404", "User Not Found"));

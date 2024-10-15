@@ -11,15 +11,15 @@ public sealed class RemoveMemberFromGroupCommandHandler(IRepositoryBase<Group, G
 {
     public async Task<Result> Handle(Command.RemoveMemberFromGroup request, CancellationToken cancellationToken)
     {
-        var CurrentUserId = currentUserService.UserId;
+        var currentUserId = currentUserService.UserId;
 
-        var U = await userRepository.FindByIdAsync(request.MemberId);
+        var U = await userRepository.FindByIdAsync(request.MemberId, cancellationToken);
         if (U == null)
             return Result.Failure(new Error("404", "User Not Found"));
         var G = await groupRepository.FindSingleAsync(x => x.Id == request.GroupId, cancellationToken);
         if (G == null)
             return Result.Failure(new Error("404", "Group Not Found"));
-        if (CurrentUserId != null && G.LeaderId.ToString() == CurrentUserId)
+        if (currentUserId != null && G.LeaderId.ToString() == currentUserId)
             return Result.Failure(new Error("403", "Leader cannot be removed from group"));
         var member = G.Members!.FirstOrDefault(x => x.StudentId == U.Id);
         if (member == null)

@@ -11,7 +11,7 @@ public class UpdateGroupCommandHandler(IRepositoryBase<Group, Guid> groupReposit
 {
     public async Task<Result> Handle(Command.UpdateGroup request, CancellationToken cancellationToken)
     {
-        var G = await groupRepository.FindByIdAsync(request.GroupId);
+        var G = await groupRepository.FindByIdAsync(request.GroupId, cancellationToken);
         if (G == null)
             return Result.Failure(new Error("404", "Group Not Found"));
         G.Name = request.Name;

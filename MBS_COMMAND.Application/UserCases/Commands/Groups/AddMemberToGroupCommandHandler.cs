@@ -12,25 +12,25 @@ public sealed class AddMemberToGroupCommandHandler(IRepositoryBase<Group, Guid> 
 {
     public async Task<Result> Handle(Command.AddMemberToGroup request, CancellationToken cancellationToken)
     {
-        var U = await userRepository.FindByIdAsync(request.MemberId);
-        if (U == null)
+        var u = await userRepository.FindByIdAsync(request.MemberId, cancellationToken);
+        if (u == null)
             return Result.Failure(new Error("404", "User Not Found"));
-        var G = await groupRepository.FindSingleAsync(x => x.Id == request.GroupId, cancellationToken);
-        if (G == null)
+        var g = await groupRepository.FindSingleAsync(x => x.Id == request.GroupId, cancellationToken);
+        if (g == null)
             return Result.Failure(new Error("404", "Group Not Found"));
-        if (G.Members!.Any(x => x.StudentId == U.Id))
+        if (g.Members!.Any(x => x.StudentId == u.Id))
             return Result.Failure(new Error("422", "Member already joined group"));
-        G.Members!.Add(new Group_Student_Mapping { StudentId = U.Id, GroupId = G.Id });
-        groupRepository.Update(G);
+        g.Members!.Add(new Group_Student_Mapping { StudentId = u.Id, GroupId = g.Id });
+        groupRepository.Update(g);
         await mailService.SendMail(new MailContent
         {
-            To = U.Email,
+            To = u.Email,
             Subject = "Join Group",
-            Body = $"You have been invited to group {G.Name}"
+            Body = $"You have been invited to group {g.Name}"
         });
         await unitOfWork.SaveChangesAsync(cancellationToken);
         //send mail to user
-        
+
         return Result.Success();
     }
 }

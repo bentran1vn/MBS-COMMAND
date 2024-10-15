@@ -18,17 +18,14 @@ public class UserApi : ApiEndpoint, ICarterModule
         var gr1 = app.NewVersionedApi("User")
             .MapGroup(BaseUrl).HasApiVersion(1);
 
-        gr1.MapPost("", CreateUser);
+        gr1.MapPost("create-mentor", CreateUser);
 
     }
 
-    public static async Task<IResult> CreateUser(ISender sender, [FromBody] Command.CreateMentorCommand command)
+    private static async Task<IResult> CreateUser(ISender sender, [FromBody] Command.CreateMentorCommand command)
     {
         var result = await sender.Send(command);
 
-        if (result.IsFailure)
-            return HandlerFailure(result);
-
-        return Results.Ok(result);
+        return result.IsFailure ? HandlerFailure(result) : Results.Ok(result);
     }
 }

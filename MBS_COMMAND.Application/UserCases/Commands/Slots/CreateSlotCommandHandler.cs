@@ -4,25 +4,18 @@ using MBS_COMMAND.Contract.Services.Slots;
 using MBS_COMMAND.Domain.Abstractions;
 using MBS_COMMAND.Domain.Abstractions.Repositories;
 using MBS_COMMAND.Domain.Entities;
-
+using static System.DateOnly;
 namespace MBS_COMMAND.Application.UserCases.Commands.Slots;
-
-public class CreateSlotCommandHandler : ICommandHandler<Command.CreateSlot>
+                
+public sealed class CreateSlotCommandHandler(
+    IRepositoryBase<Slot, Guid> slotRepository,
+    IRepositoryBase<User, Guid> userRepository,
+    IUnitOfWork unitOfWork)
+    : ICommandHandler<Command.CreateSlot>
 {
-    private readonly IRepositoryBase<Slot, Guid> _slotRepository;
-    private readonly IRepositoryBase<User, Guid> _userRepository;
-    private readonly IUnitOfWork _unitOfWork;
-
-    public CreateSlotCommandHandler(IRepositoryBase<Slot, Guid> slotRepository, IRepositoryBase<User, Guid> userRepository, IUnitOfWork unitOfWork)
-    {
-        _slotRepository = slotRepository;
-        _userRepository = userRepository;
-        _unitOfWork = unitOfWork;
-    }
-
     public async Task<Result> Handle(Command.CreateSlot request, CancellationToken cancellationToken)
     {
-        var mentor = await _userRepository.FindByIdAsync(request.MentorId);
+        var mentor = await userRepository.FindByIdAsync(request.MentorId, cancellationToken);
         if (mentor == null)
             return Result.Failure(new Error("404", "User Not Found"));
 
@@ -32,10 +25,10 @@ public class CreateSlotCommandHandler : ICommandHandler<Command.CreateSlot>
             MentorId = mentor.Id,
             StartTime = TimeOnly.Parse(slotModel.StartTime),
             EndTime = TimeOnly.Parse(slotModel.EndTime),
-            Date = DateOnly.Parse(slotModel.Date),
+            Date = Parse(slotModel.Date),
             Note = slotModel.Note,
             IsOnline = slotModel.IsOnline,
-            Month = (short?)DateOnly.Parse(slotModel.Date).Month
+            Month = (short?)Parse(slotModel.Date).Month
         }).ToList();
 
         // Check for overlaps within the request
@@ -44,7 +37,7 @@ public class CreateSlotCommandHandler : ICommandHandler<Command.CreateSlot>
             return overlapResult;
 
         // Fetch existing slots for the mentor
-        var existingSlots = _slotRepository.FindAll(x => x.MentorId == mentor.Id);
+        var existingSlots = slotRepository.FindAll(x => x.MentorId == mentor.Id);
 
         // Check for overlaps with existing slots
         foreach (var newSlot in newSlots)
@@ -55,16 +48,18 @@ public class CreateSlotCommandHandler : ICommandHandler<Command.CreateSlot>
             }
         }
 
-        _slotRepository.AddRange(newSlots);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        slotRepository.AddRange(newSlots);
+        mentor.CreateSlot(newSlots, mentor.Id);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        
         return Result.Success();
     }
 
-    private Result CheckForOverlapsInRequest(List<Slot> slots)
+    private static Result CheckForOverlapsInRequest(List<Slot> slots)
     {
-        for (int i = 0; i < slots.Count; i++)
+        for (var i = 0; i < slots.Count; i++)
         {
-            for (int j = i + 1; j < slots.Count; j++)
+            for (var j = i + 1; j < slots.Count; j++)
             {
                 if (AreOverlapping(slots[i], slots[j]))
                 {
@@ -77,12 +72,12 @@ public class CreateSlotCommandHandler : ICommandHandler<Command.CreateSlot>
         return Result.Success();
     }
 
-    private bool HasOverlap(Slot newSlot, IEnumerable<Slot> existingSlots)
+    private static bool HasOverlap(Slot newSlot, IEnumerable<Slot> existingSlots)
     {
         return existingSlots.Any(existingSlot => AreOverlapping(newSlot, existingSlot));
     }
 
-    private bool AreOverlapping(Slot slot1, Slot slot2)
+    private static bool AreOverlapping(Slot slot1, Slot slot2)
     {
         return slot1.Date == slot2.Date &&
                slot1.StartTime < slot2.EndTime &&
