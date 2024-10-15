@@ -6,7 +6,7 @@ using MBS_COMMAND.Domain.Abstractions.Repositories;
 using MBS_COMMAND.Domain.Entities;
 using static System.DateOnly;
 namespace MBS_COMMAND.Application.UserCases.Commands.Slots;
-       //Test         
+       //Test       v2   
 public sealed class CreateSlotCommandHandler(
     IRepositoryBase<Slot, Guid> slotRepository,
     IRepositoryBase<User, Guid> userRepository,
