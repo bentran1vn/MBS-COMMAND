@@ -13,6 +13,7 @@ using MBS_COMMAND.Infrastucture.Mail;
 using MBS_COMMAND.Infrastucture.DependencyInjection.Options;
 using MBS_COMMAND.Infrastucture.PipeObservers;
 using MBS_COMMAND.Infrastucture.Media;
+using MBS_COMMAND.Infrastucture.Authentication;
 using Microsoft.Extensions.Options;
 
 namespace MBS_COMMAND.Infrastucture.DependencyInjection.Extensions;
@@ -21,6 +22,7 @@ public static class ServiceCollectionExtensions
 {
     public static void AddServicesInfrastructure(this IServiceCollection services)
         => services
+            .AddTransient<IJwtTokenService, JwtTokenService>()
             .AddTransient<ICacheService, CacheService>()
             .AddSingleton<IMediaService, CloudinaryService>()
             .AddSingleton<IMailService, MailService>()
