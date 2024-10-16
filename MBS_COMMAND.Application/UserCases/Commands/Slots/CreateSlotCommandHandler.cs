@@ -6,10 +6,10 @@ using MBS_COMMAND.Domain.Abstractions.Repositories;
 using MBS_COMMAND.Domain.Entities;
 using static System.DateOnly;
 namespace MBS_COMMAND.Application.UserCases.Commands.Slots;
-       //Test       v2   
 public sealed class CreateSlotCommandHandler(
     IRepositoryBase<Slot, Guid> slotRepository,
     IRepositoryBase<User, Guid> userRepository,
+    IRepositoryBase<Semester,Guid> semesterRepository,
     IUnitOfWork unitOfWork)
     : ICommandHandler<Command.CreateSlot>
 {
@@ -18,7 +18,9 @@ public sealed class CreateSlotCommandHandler(
         var mentor = await userRepository.FindByIdAsync(request.MentorId, cancellationToken);
         if (mentor == null)
             return Result.Failure(new Error("404", "User Not Found"));
-
+        var currentSemester = await semesterRepository.FindSingleAsync(x => x.IsActive, cancellationToken);
+        if(request.SlotModels.Any(x=>Parse(x.Date) < currentSemester!.From || Parse(x.Date) > currentSemester.From.AddDays(6)))
+            return Result.Failure(new Error("400", "Slot date must within the current semester and in the 1st week of the semester")); 
         var newSlots = request.SlotModels.Select(slotModel => new Slot
         {
             Id = Guid.NewGuid(),
@@ -40,12 +42,9 @@ public sealed class CreateSlotCommandHandler(
         var existingSlots = slotRepository.FindAll(x => x.MentorId == mentor.Id);
 
         // Check for overlaps with existing slots
-        foreach (var newSlot in newSlots)
+        foreach (var newSlot in newSlots.Where(newSlot => HasOverlap(newSlot, existingSlots)))
         {
-            if (HasOverlap(newSlot, existingSlots))
-            {
-                return Result.Failure(new Error("409", $"Slot overlaps with existing slot: {newSlot.Date} {newSlot.StartTime}-{newSlot.EndTime}"));
-            }
+            return Result.Failure(new Error("409", $"Slot overlaps with existing slot: {newSlot.Date} {newSlot.StartTime}-{newSlot.EndTime}"));
         }
 
         slotRepository.AddRange(newSlots);

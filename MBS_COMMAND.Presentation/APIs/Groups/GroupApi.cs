@@ -14,8 +14,16 @@ public class GroupApi : ApiEndpoint, ICarterModule
         gr1.MapDelete("member", RemoveMemberFromGroup);
         gr1.MapPut("change-leader", ChangeLeader).WithSummary("must login in order to use this api");
         gr1.MapPut(string.Empty, UpdateGroup);
+        gr1.MapGet("accept-invitation/{groupId}/{memberId}", AcceptGroupInvitation);
     }
-    public static async Task<IResult> UpdateGroup(ISender sender, [FromBody] Command.UpdateGroup updateGroup)
+
+    
+    private static async Task<IResult> AcceptGroupInvitation(ISender sender, string groupId,string memberId)
+    {
+        var result = await sender.Send(new Command.AcceptGroupInvitation(Guid.Parse(groupId), Guid.Parse(memberId)));
+        return result.IsFailure ? HandlerFailure(result) : Results.Ok(result);
+    }
+    private static async Task<IResult> UpdateGroup(ISender sender, [FromBody] Command.UpdateGroup updateGroup)
     {
         var result = await sender.Send(updateGroup);
         if (result.IsFailure)
@@ -23,38 +31,29 @@ public class GroupApi : ApiEndpoint, ICarterModule
 
         return Results.Ok(result);
     }
-    public static async Task<IResult> ChangeLeader(ISender sender, [FromBody] Command.ChangeLeader request)
+
+    private static async Task<IResult> ChangeLeader(ISender sender, [FromBody] Command.ChangeLeader request)
     {
         var result = await sender.Send(request);
-        if (result.IsFailure)
-            return HandlerFailure(result);
-
-        return Results.Ok(result);
+        return result.IsFailure ? HandlerFailure(result) : Results.Ok(result);
     }
 
-    public static async Task<IResult> CreateGroup(ISender sender, [FromBody] Command.CreateGroupCommand request)
+    private static async Task<IResult> CreateGroup(ISender sender, [FromBody] Command.CreateGroupCommand request)
     {
         var result = await sender.Send(request);
-        if (result.IsFailure)
-            return HandlerFailure(result);
-
-        return Results.Ok(result);
+        return result.IsFailure ? HandlerFailure(result) : Results.Ok(result);
     }
-    public static async Task<IResult> AddMemberToGroup(ISender sender, [FromBody] Command.AddMemberToGroup request)
+
+    private static async Task<IResult> AddMemberToGroup(ISender sender, [FromBody] Command.AddMemberToGroup request)
     {
         var result = await sender.Send(request);
-        if (result.IsFailure)
-            return HandlerFailure(result);
-
-        return Results.Ok(result);
+        return result.IsFailure ? HandlerFailure(result) : Results.Ok(result);
     }
-    public static async Task<IResult> RemoveMemberFromGroup(ISender sender, [FromBody] Command.RemoveMemberFromGroup request)
+
+    private static async Task<IResult> RemoveMemberFromGroup(ISender sender, [FromBody] Command.RemoveMemberFromGroup request)
     {
         var result = await sender.Send(request);
-        if (result.IsFailure)
-            return HandlerFailure(result);
-
-        return Results.Ok(result);
+        return result.IsFailure ? HandlerFailure(result) : Results.Ok(result);
     }
 
 }
