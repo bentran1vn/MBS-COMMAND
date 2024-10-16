@@ -8,13 +8,17 @@ public class SlotApi : ApiEndpoint,ICarterModule
     {
         var gr1 = app.NewVersionedApi("Slots").MapGroup(BaseUrl).HasApiVersion(1);
         gr1.MapPost(string.Empty, CreateSlot).WithSummary("mm/dd/yyyy");
+        gr1.MapGet("generate", GenerateSlotForSemester);
     }
-    public static async Task<IResult> CreateSlot(ISender sender, Command.CreateSlot command)
+
+    private static async Task<IResult> CreateSlot(ISender sender,[FromBody] Command.CreateSlot command)
     {
         var result = await sender.Send(command);
-        if (result.IsFailure)
-            return HandlerFailure(result);
-
-        return Results.Ok(result);
+        return result.IsFailure ? HandlerFailure(result) : Results.Ok(result);
+    }
+    private static async Task<IResult> GenerateSlotForSemester(ISender sender)
+    {
+        var result = await sender.Send(new Command.GenerateSlotForSemester());
+        return result.IsFailure ? HandlerFailure(result) : Results.Ok(result);
     }
 }
