@@ -9,6 +9,7 @@ public class Schedule : Entity<Guid>, IAuditableEntity
 
     public Guid GroupId { get; set; }
     public virtual Group? Group { get; set; }
+    
     public TimeOnly StartTime { get; set; }
     public TimeOnly EndTime { get; set; }
     public DateOnly Date { get; set; }

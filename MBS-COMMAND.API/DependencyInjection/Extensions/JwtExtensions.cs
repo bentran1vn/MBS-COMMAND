@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using MBS_COMMAND.Infrastucture.DependencyInjection.Options;
+using MBS_COMMAND.Presentation.Constrants;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -58,7 +59,12 @@ public static class JwtExtensions
             //o.EventsType = typeof(CustomJwtBearerEvents);
         });
 
-        services.AddAuthorization();
+        services.AddAuthorization(opts =>
+        {
+            opts.AddPolicy(RoleNames.Student, policy => policy.RequireRole("0"));
+            opts.AddPolicy(RoleNames.Mentor, policy => policy.RequireRole("1"));
+            opts.AddPolicy(RoleNames.Admin, policy => policy.RequireRole("2"));
+        });
        // services.AddScoped<CustomJwtBearerEvents>();
     }
 }

@@ -13,8 +13,6 @@ public class Subject : Entity<Guid>, IAuditableEntity
     public int Status { get ; set ; }
     public Guid SemesterId { get; set; }
     public virtual Semester? Semester { get; set; }
-
-
     public DateTimeOffset CreatedOnUtc { get ; set ; }
     public DateTimeOffset? ModifiedOnUtc { get ; set ; }
 }
