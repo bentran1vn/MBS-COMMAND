@@ -1,14 +1,18 @@
-﻿using MBS_COMMAND.Domain.Abstractions.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+using MBS_COMMAND.Domain.Abstractions.Entities;
 
 namespace MBS_COMMAND.Domain.Entities;
 
 public class Feedback : Entity<Guid>, IAuditableEntity
 {
-
+    [MaxLength(100)]
     public string? Content { get; set; }
+    [Range(1,5)]
     public int Rating { get; set; }
-    public Guid? SlotId { get; set; }
-    public virtual Slot? Slot { get; set; }
+    public Guid? ScheduleId { get; set; }
+    public virtual Schedule? Schedule { get; set; }
+    public Guid? GroupId { get; set; }
+    public virtual Group? Group { get; set; }
     public bool IsMentor { get; set; }
     public DateTimeOffset CreatedOnUtc { get; set; }
     public DateTimeOffset? ModifiedOnUtc { get; set; }

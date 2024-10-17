@@ -106,10 +106,14 @@ namespace MBS_COMMAND.Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTimeOffset>("CreatedOnUtc")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid?>("GroupId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -123,12 +127,14 @@ namespace MBS_COMMAND.Persistence.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("SlotId")
+                    b.Property<Guid?>("ScheduleId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SlotId");
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("ScheduleId");
 
                     b.ToTable("Feedbacks");
                 });
@@ -279,6 +285,9 @@ namespace MBS_COMMAND.Persistence.Migrations
                     b.Property<DateTimeOffset?>("ModifiedOnUtc")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<Guid>("SlotId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<TimeOnly>("StartTime")
                         .HasColumnType("time");
 
@@ -290,6 +299,8 @@ namespace MBS_COMMAND.Persistence.Migrations
                     b.HasIndex("GroupId");
 
                     b.HasIndex("MentorId");
+
+                    b.HasIndex("SlotId");
 
                     b.HasIndex("SubjectId");
 
@@ -565,11 +576,17 @@ namespace MBS_COMMAND.Persistence.Migrations
 
             modelBuilder.Entity("MBS_COMMAND.Domain.Entities.Feedback", b =>
                 {
-                    b.HasOne("MBS_COMMAND.Domain.Entities.Slot", "Slot")
+                    b.HasOne("MBS_COMMAND.Domain.Entities.Group", "Group")
                         .WithMany()
-                        .HasForeignKey("SlotId");
+                        .HasForeignKey("GroupId");
 
-                    b.Navigation("Slot");
+                    b.HasOne("MBS_COMMAND.Domain.Entities.Schedule", "Schedule")
+                        .WithMany()
+                        .HasForeignKey("ScheduleId");
+
+                    b.Navigation("Group");
+
+                    b.Navigation("Schedule");
                 });
 
             modelBuilder.Entity("MBS_COMMAND.Domain.Entities.Group", b =>
@@ -645,6 +662,12 @@ namespace MBS_COMMAND.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MBS_COMMAND.Domain.Entities.Slot", "Slot")
+                        .WithMany()
+                        .HasForeignKey("SlotId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("MBS_COMMAND.Domain.Entities.Subject", "Subject")
                         .WithMany()
                         .HasForeignKey("SubjectId")
@@ -654,6 +677,8 @@ namespace MBS_COMMAND.Persistence.Migrations
                     b.Navigation("Group");
 
                     b.Navigation("Mentor");
+
+                    b.Navigation("Slot");
 
                     b.Navigation("Subject");
                 });
