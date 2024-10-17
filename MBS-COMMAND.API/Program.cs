@@ -78,6 +78,7 @@ builder.Services.ConfigureMailOptionsInfrastucture(builder.Configuration.GetSect
 // Add Middleware => Remember using middleware
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 builder.Services.AddTransient<ICurrentUserService,CurrentUserService>();
+
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
