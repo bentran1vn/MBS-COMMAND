@@ -60,14 +60,14 @@ public class CreateMentorSkillsCommandHandler : ICommandHandler<Command.CreateMe
         
         _cetificateRepository.AddRange(certificates);
         
-        // mentorSkill.CreateMentor(mentor);
+        mentorSkill.CreateMentorSkills(mentor.Id, skill, certificates);
         
-        await _mailService.SendMail(new MailContent()
-        {
-            Body = "DITME MAY NGHI",
-            Subject = "XIN CHAO QUY KHACH",
-            To = "tan182205@gmail.com"
-        });
+        // await _mailService.SendMail(new MailContent()
+        // {
+        //     Body = "DITME MAY NGHI",
+        //     Subject = "XIN CHAO QUY KHACH",
+        //     To = "tan182205@gmail.com"
+        // });
         
         // await _mailService.SendMail(EmailExtensions.ForgotPasswordBody("randomNumber", $"USERNAME", "request.Email"));
 
