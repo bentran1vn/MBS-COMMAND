@@ -17,7 +17,6 @@ public class GroupApi : ApiEndpoint, ICarterModule
         gr1.MapGet("accept-invitation/{groupId}/{memberId}", AcceptGroupInvitation);
         gr1.MapPost("mentor", AddMentorToGroup);
     }
-
     private static async Task<IResult> AddMentorToGroup(ISender sender, [FromBody] Command.AddMentorToGroup request)
     {
         var result = await sender.Send(request);
