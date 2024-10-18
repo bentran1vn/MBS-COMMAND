@@ -76,7 +76,6 @@ public class CreateScheduleCommandHandler : ICommandHandler<Command.CreateSchedu
             MentorId = slot.MentorId ?? new Guid(),
             SubjectId = request.SubjectId,
             GroupId = group.Id,
-            IsBooked = true,
         };
 
         slot.IsBook = true;

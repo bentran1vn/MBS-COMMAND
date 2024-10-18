@@ -10,12 +10,10 @@ public class Schedule : Entity<Guid>, IAuditableEntity
     public virtual Slot? Slot { get; set; }
     public Guid GroupId { get; set; }
     public virtual Group? Group { get; set; }
-    
     public TimeOnly StartTime { get; set; }
     public TimeOnly EndTime { get; set; }
     public DateOnly Date { get; set; }
     public Guid SubjectId { get; set; }
-    public bool IsBooked { get; set; }=false;
     public virtual Subject? Subject { get; set; }
     public DateTimeOffset CreatedOnUtc { get ; set ; }
     public DateTimeOffset? ModifiedOnUtc { get ; set ; }

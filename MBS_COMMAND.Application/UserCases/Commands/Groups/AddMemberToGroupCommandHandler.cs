@@ -20,6 +20,8 @@ public sealed class AddMemberToGroupCommandHandler(
         var u = await userRepository.FindByIdAsync(request.MemberId, cancellationToken);
         if (u == null)
             return Result.Failure(new Error("404", "User Not Found"));
+        if(u.Role==1)
+            return Result.Failure(new Error("422", "Mentor cannot be added to group"));
         var g = await groupRepository.FindSingleAsync(x => x.Id == request.GroupId, cancellationToken);
         if (g == null)
             return Result.Failure(new Error("404", "Group Not Found"));

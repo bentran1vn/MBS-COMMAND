@@ -1,6 +1,7 @@
 ﻿using MBS_COMMAND.Contract.Abstractions.Messages;
 using MBS_COMMAND.Contract.Abstractions.Shared;
 using MBS_COMMAND.Contract.Services.Feedbacks;
+using MBS_COMMAND.Domain.Abstractions;
 using MBS_COMMAND.Domain.Abstractions.Repositories;
 using MBS_COMMAND.Domain.Entities;
 
@@ -10,12 +11,12 @@ public class CreateFeedbackCommandHandler : ICommandHandler<Command.CreateFeedba
 {
     private readonly IRepositoryBase<Feedback, Guid> _feedbackRepository;
     private readonly ICurrentUserService _currentUserService;
-
-    public CreateFeedbackCommandHandler(IRepositoryBase<Feedback, Guid> feedbackRepository,
-        ICurrentUserService currentUserService)
+    private readonly IUnitOfWork _unitOfWork;
+    public CreateFeedbackCommandHandler(IRepositoryBase<Feedback, Guid> feedbackRepository, ICurrentUserService currentUserService, IUnitOfWork unitOfWork)
     {
         _feedbackRepository = feedbackRepository;
         _currentUserService = currentUserService;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result> Handle(Command.CreateFeedback request, CancellationToken cancellationToken)
@@ -30,6 +31,7 @@ public class CreateFeedbackCommandHandler : ICommandHandler<Command.CreateFeedba
             IsMentor = role,
         };
         _feedbackRepository.Add(feedback);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success();
     }
 }
