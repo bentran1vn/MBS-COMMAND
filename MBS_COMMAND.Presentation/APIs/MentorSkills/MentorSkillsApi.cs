@@ -1,4 +1,7 @@
+using MBS_COMMAND.Application.Abstractions;
 using MBS_COMMAND.Presentation.Abstractions;
+using MBS_COMMAND.Presentation.Constrants;
+using Microsoft.AspNetCore.Authentication;
 
 namespace MBS_COMMAND.Presentation.APIs.MentorSkills;
 
@@ -14,13 +17,20 @@ public class MentorSkillsApi : ApiEndpoint, ICarterModule
             .MapGroup(BaseUrl).HasApiVersion(1);
         
         gr1.MapPost("", CreateMentorSkills)
+            .RequireAuthorization(RoleNames.Mentor)
             .Accepts<CommandV1.CreateMentorSkillsCommand>("multipart/form-data")
             .DisableAntiforgery();
     }
     
-    public static async Task<IResult> CreateMentorSkills(ISender sender, [FromForm] CommandV1.CreateMentorSkillsCommand command)
+    public static async Task<IResult> CreateMentorSkills(ISender sender, [FromForm] CommandV1.CreateMentorSkillsCommand command,
+        HttpContext context, IJwtTokenService jwtTokenService)
     {
-        command.MentorId = new Guid("c74174e2-ce31-48fb-c3ba-08dce3193e4b");
+        var accessToken = await context.GetTokenAsync("access_token");
+        var (claimPrincipal, _)  = jwtTokenService.GetPrincipalFromExpiredToken(accessToken!);
+        var userId = claimPrincipal.Claims.FirstOrDefault(c => c.Type == "UserId")!.Value;
+        
+        command.MentorId = new Guid(userId);
+        
         var result = await sender.Send(command);
         
         if (result.IsFailure)
