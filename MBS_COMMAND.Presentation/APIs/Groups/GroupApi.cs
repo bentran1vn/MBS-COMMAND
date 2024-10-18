@@ -15,9 +15,14 @@ public class GroupApi : ApiEndpoint, ICarterModule
         gr1.MapPut("change-leader", ChangeLeader).WithSummary("must login in order to use this api");
         gr1.MapPut(string.Empty, UpdateGroup);
         gr1.MapGet("accept-invitation/{groupId}/{memberId}", AcceptGroupInvitation);
+        gr1.MapPost("mentor", AddMentorToGroup);
     }
 
-    
+    private static async Task<IResult> AddMentorToGroup(ISender sender, [FromBody] Command.AddMentorToGroup request)
+    {
+        var result = await sender.Send(request);
+        return result.IsFailure ? HandlerFailure(result) : Results.Ok(result);
+    }
     private static async Task<IResult> AcceptGroupInvitation(ISender sender, string groupId,string memberId)
     {
         var result = await sender.Send(new Command.AcceptGroupInvitation(Guid.Parse(groupId), Guid.Parse(memberId)));
