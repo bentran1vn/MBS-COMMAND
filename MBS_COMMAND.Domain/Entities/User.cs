@@ -29,7 +29,7 @@ public class User : AggregateRoot<Guid>, IAuditableEntity
             user.Status, user.CreatedOnUtc, user.IsDeleted));
     }
 
-    public void CreateSlot(IEnumerable<Slot> slots, Guid MentorID)
+    public void CreateSlot(IEnumerable<Slot> slots)
     {
         var slot = slots.Select(x => new DomainEvent.Slot
         {
@@ -41,9 +41,7 @@ public class User : AggregateRoot<Guid>, IAuditableEntity
             Note = x.Note,
             Month = x.Month,
             IsBook = x.IsBook,
-            CreatedOnUtc = x.CreatedOnUtc,
-            ModifiedOnUtc = x.ModifiedOnUtc
         }).ToList();
-        RaiseDomainEvent(new DomainEvent.SlotsCreated(Guid.NewGuid(), slot, MentorID));
+        RaiseDomainEvent(new DomainEvent.MentorSlotCreated(Guid.NewGuid(), slot));
     }
 }

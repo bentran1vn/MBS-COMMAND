@@ -8,7 +8,6 @@ namespace MBS_COMMAND.Application.UserCases.Commands.Groups;
 
 public sealed class CreateGroupCommandHandler(
     IRepositoryBase<Group, Guid> repositoryBase,
-    IRepositoryBase<User, Guid> userRepository,
     ICurrentUserService currentUserService) : ICommandHandler<Command.CreateGroupCommand>
 {
     public async Task<Result> Handle(Command.CreateGroupCommand request, CancellationToken cancellationToken)

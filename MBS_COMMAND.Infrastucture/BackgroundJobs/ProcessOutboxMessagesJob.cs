@@ -68,6 +68,24 @@ public class ProcessOutboxMessagesJob : IJob
                             });
                         await _publishEndpoint.Publish(mentorCreated, context.CancellationToken);
                         break;
+                    case nameof(ServicesShared.Users.DomainEvent.MentorSlotCreated):
+                        var MentorSlotCreated = JsonConvert.DeserializeObject<ServicesShared.Users.DomainEvent.MentorSlotCreated>(
+                            outboxMessage.Content,
+                            new JsonSerializerSettings
+                            {
+                                TypeNameHandling = TypeNameHandling.All
+                            });
+                        await _publishEndpoint.Publish(MentorSlotCreated, context.CancellationToken);
+                        break;
+                    case nameof(ServicesShared.Slots.DomainEvent.SlotsCreated):
+                        var slotsCreated = JsonConvert.DeserializeObject<ServicesShared.Slots.DomainEvent.SlotsCreated>(
+                            outboxMessage.Content,
+                            new JsonSerializerSettings
+                            {
+                                TypeNameHandling = TypeNameHandling.All
+                            });
+                        await _publishEndpoint.Publish(slotsCreated, context.CancellationToken);
+                        break;
 
                     // case nameof(DomainEvent.ProductUpdated):
                     //     var productUpdated = JsonConvert.DeserializeObject<DomainEvent.ProductUpdated>(

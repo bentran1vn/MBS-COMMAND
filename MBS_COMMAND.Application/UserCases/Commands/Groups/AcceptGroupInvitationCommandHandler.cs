@@ -30,7 +30,7 @@ public class AcceptGroupInvitationCommandHandler(
         if (g.Members!.Any(x => x.StudentId == u.Id))
             return Result.Failure(new Error("422", "Member already joined group"));
         g.Members!.Add(new Group_Student_Mapping { StudentId = u.Id, GroupId = g.Id });
-        unitOfWork.SaveChangesAsync(cancellationToken);
+     await   unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success("Member added to group");
     }
 }

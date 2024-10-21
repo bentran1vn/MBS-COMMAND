@@ -19,6 +19,20 @@ public class Slot : AggregateRoot<Guid>, IAuditableEntity
     public DateTimeOffset CreatedOnUtc { get; set; }
     public DateTimeOffset? ModifiedOnUtc { get; set; }
 
-    
+    public void CreateSlot(IEnumerable<Slot> slots)
+    {
+        var slot = slots.Select(x => new DomainEvent.Slot
+        {
+            MentorId = x.MentorId,
+            StartTime = x.StartTime,
+            EndTime = x.EndTime,
+            Date = x.Date,
+            IsOnline = x.IsOnline,
+            Note = x.Note,
+            Month = x.Month,
+            IsBook = x.IsBook,
+        }).ToList();
+        RaiseDomainEvent(new DomainEvent.SlotsCreated(Guid.NewGuid(), slot,new Guid()));
+    }
 
 }

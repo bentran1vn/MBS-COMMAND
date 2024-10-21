@@ -4,5 +4,5 @@ public static class Command
 {
     public record CreateSlot(Guid MentorId, List<SlotModel> SlotModels) : ICommand;
 
-    public record GenerateSlotForSemester(): ICommand;
+    public record GenerateSlotForSemester: ICommand;
 }
