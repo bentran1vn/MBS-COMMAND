@@ -1,4 +1,4 @@
-﻿using MBS_COMMAND.Contract.Abstractions.Messages;
+using MBS_COMMAND.Contract.Abstractions.Messages;
 using MBS_COMMAND.Contract.Abstractions.Shared;
 using MBS_COMMAND.Contract.Services.Groups;
 using MBS_COMMAND.Domain.Abstractions;
@@ -20,7 +20,7 @@ public class AddMentorToGroupCommandHandler(
         {
             return Result.Failure(new Error("404", "User not found"));
         }
-        if(user.Role!=2)
+        if(user.Role!=1)
         {
             return Result.Failure(new Error("403", "User is not a mentor"));
         }
