@@ -10,7 +10,6 @@ using MessageShared = MBS_CONTRACT.SHARE.Abstractions.Messages;
 using ServicesShared = MBS_CONTRACT.SHARE.Services;
 
 namespace MBS_COMMAND.Infrastucture.BackgroundJobs;
-
 [DisallowConcurrentExecution]
 public class ProcessOutboxMessagesJob : IJob
 {
@@ -40,7 +39,7 @@ public class ProcessOutboxMessagesJob : IJob
                     new JsonSerializerSettings
                     {
                         TypeNameHandling = TypeNameHandling.All
-                    });  
+                    });
 
             if (domainEvent is null)
                 continue;
@@ -50,31 +49,34 @@ public class ProcessOutboxMessagesJob : IJob
                 switch (domainEvent.GetType().Name)
                 {
                     case nameof(ServicesShared.MentorSkills.DomainEvent.MentorSkillsCreated):
-                        var mentorSkillsCreated = JsonConvert.DeserializeObject<ServicesShared.MentorSkills.DomainEvent.MentorSkillsCreated>(
-                                    outboxMessage.Content,
-                                    new JsonSerializerSettings
-                                    {
-                                        TypeNameHandling = TypeNameHandling.All
-                                    });
+                        var mentorSkillsCreated =
+                            JsonConvert.DeserializeObject<ServicesShared.MentorSkills.DomainEvent.MentorSkillsCreated>(
+                                outboxMessage.Content,
+                                new JsonSerializerSettings
+                                {
+                                    TypeNameHandling = TypeNameHandling.All
+                                });
                         await _publishEndpoint.Publish(mentorSkillsCreated, context.CancellationToken);
                         break;
-                    
+
                     case nameof(ServicesShared.Mentors.DomainEvent.MentorCreated):
-                        var mentorCreated = JsonConvert.DeserializeObject<ServicesShared.Mentors.DomainEvent.MentorCreated>(
-                            outboxMessage.Content,
-                            new JsonSerializerSettings
-                            {
-                                TypeNameHandling = TypeNameHandling.All
-                            });
+                        var mentorCreated =
+                            JsonConvert.DeserializeObject<ServicesShared.Mentors.DomainEvent.MentorCreated>(
+                                outboxMessage.Content,
+                                new JsonSerializerSettings
+                                {
+                                    TypeNameHandling = TypeNameHandling.All
+                                });
                         await _publishEndpoint.Publish(mentorCreated, context.CancellationToken);
                         break;
                     case nameof(ServicesShared.Users.DomainEvent.MentorSlotCreated):
-                        var MentorSlotCreated = JsonConvert.DeserializeObject<ServicesShared.Users.DomainEvent.MentorSlotCreated>(
-                            outboxMessage.Content,
-                            new JsonSerializerSettings
-                            {
-                                TypeNameHandling = TypeNameHandling.All
-                            });
+                        var MentorSlotCreated =
+                            JsonConvert.DeserializeObject<ServicesShared.Users.DomainEvent.MentorSlotCreated>(
+                                outboxMessage.Content,
+                                new JsonSerializerSettings
+                                {
+                                    TypeNameHandling = TypeNameHandling.All
+                                });
                         await _publishEndpoint.Publish(MentorSlotCreated, context.CancellationToken);
                         break;
                     case nameof(ServicesShared.Slots.DomainEvent.SlotsCreated):
@@ -84,29 +86,8 @@ public class ProcessOutboxMessagesJob : IJob
                             {
                                 TypeNameHandling = TypeNameHandling.All
                             });
+                        
                         await _publishEndpoint.Publish(slotsCreated, context.CancellationToken);
-                        break;
-
-                    // case nameof(DomainEvent.ProductUpdated):
-                    //     var productUpdated = JsonConvert.DeserializeObject<DomainEvent.ProductUpdated>(
-                    //                 outboxMessage.Content,
-                    //                 new JsonSerializerSettings
-                    //                 {
-                    //                     TypeNameHandling = TypeNameHandling.All
-                    //                 });
-                    //     await _publishEndpoint.Publish(productUpdated, context.CancellationToken);
-                    //     break;
-
-                    // case nameof(DomainEvent.ProductDeleted):
-                    //     var productDeleted = JsonConvert.DeserializeObject<DomainEvent.ProductDeleted>(
-                    //                 outboxMessage.Content,
-                    //                 new JsonSerializerSettings
-                    //                 {
-                    //                     TypeNameHandling = TypeNameHandling.All
-                    //                 });
-                    //     await _publishEndpoint.Publish(productDeleted, context.CancellationToken);
-                    //     break;
-                    default:
                         break;
                 }
 

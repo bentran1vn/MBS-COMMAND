@@ -32,7 +32,7 @@ public class Slot : AggregateRoot<Guid>, IAuditableEntity
             Month = x.Month,
             IsBook = x.IsBook,
         }).ToList();
-        RaiseDomainEvent(new DomainEvent.SlotsCreated(Guid.NewGuid(), slot,new Guid()));
+        RaiseDomainEvent(new DomainEvent.SlotsCreated(Guid.NewGuid(), slot));
     }
 
 }

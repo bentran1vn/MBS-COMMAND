@@ -43,5 +43,7 @@ public class User : AggregateRoot<Guid>, IAuditableEntity
             IsBook = x.IsBook,
         }).ToList();
         RaiseDomainEvent(new DomainEvent.MentorSlotCreated(Guid.NewGuid(), slot));
+        Console.BackgroundColor = ConsoleColor.DarkGreen;
+        Console.WriteLine("MentorSlotCreatedDomainevent");
     }
 }

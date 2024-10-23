@@ -5,82 +5,152 @@ using MBS_COMMAND.Domain.Abstractions;
 using MBS_COMMAND.Domain.Abstractions.Repositories;
 using MBS_COMMAND.Domain.Entities;
 using static System.DateOnly;
+
 namespace MBS_COMMAND.Application.UserCases.Commands.Slots;
 public sealed class CreateSlotCommandHandler(
     IRepositoryBase<Slot, Guid> slotRepository,
     IRepositoryBase<User, Guid> userRepository,
-    IRepositoryBase<Semester,Guid> semesterRepository,
+    IRepositoryBase<Semester, Guid> semesterRepository,
     IUnitOfWork unitOfWork)
     : ICommandHandler<Command.CreateSlot>
 {
     public async Task<Result> Handle(Command.CreateSlot request, CancellationToken cancellationToken)
     {
+        // Parallel fetch of mentor and current semester
         var mentor = await userRepository.FindByIdAsync(request.MentorId, cancellationToken);
         if (mentor == null)
             return Result.Failure(new Error("404", "User Not Found"));
-        var currentSemester = await semesterRepository.FindSingleAsync(x => x.IsActive, cancellationToken);
-        if(request.SlotModels.Any(x=>Parse(x.Date) < currentSemester!.From || Parse(x.Date) > currentSemester.From.AddDays(6)))
-            return Result.Failure(new Error("400", "Slot date must within the current semester and in the 1st week of the semester")); 
-        var newSlots = request.SlotModels.Select(slotModel => new Slot
-        {
-            Id = Guid.NewGuid(),
-            MentorId = mentor.Id,
-            StartTime = TimeOnly.Parse(slotModel.StartTime),
-            EndTime = TimeOnly.Parse(slotModel.EndTime),
-            Date = Parse(slotModel.Date),
-            Note = slotModel.Note,
-            IsOnline = slotModel.IsOnline,
-            Month = (short?)Parse(slotModel.Date).Month
-        }).ToList();
 
-        // Check for overlaps within the request
-        var overlapResult = CheckForOverlapsInRequest(newSlots);
+        var currentSemester = await semesterRepository.FindSingleAsync(x => x.IsActive, cancellationToken);
+        if (currentSemester == null)
+            return Result.Failure(new Error("404", "Active semester not found"));
+
+        var semesterEndDate = currentSemester.From.AddDays(6);
+
+        // Validate all dates in parallel (no DB operations here, so parallel is safe)
+        var invalidSlots = request.SlotModels
+            .AsParallel()
+            .Select(x =>
+            {
+                var date = Parse(x.Date);
+                var startTime = TimeOnly.Parse(x.StartTime);
+                var endTime = TimeOnly.Parse(x.EndTime);
+                var duration = endTime - startTime;
+
+                return new
+                {
+                    Date = x.Date,
+                    StartTime = startTime,
+                    EndTime = endTime,
+                    IsDateInvalid = date < currentSemester.From || date > semesterEndDate,
+                    IsDurationInvalid = duration < TimeSpan.FromHours(1.5)
+                };
+            })
+            .Where(x => x.IsDateInvalid || x.IsDurationInvalid)
+            .ToList();
+
+        if (invalidSlots.Count != 0)
+        {
+            var dateErrors = invalidSlots
+                .Where(x => x.IsDateInvalid)
+                .Select(x => x.Date);
+
+            var durationErrors = invalidSlots
+                .Where(x => x.IsDurationInvalid)
+                .Select(x => $"{x.Date} {x.StartTime}-{x.EndTime}");
+
+            var errorMessages = new List<string>();
+
+            if (dateErrors.Any())
+                errorMessages.Add(
+                    $"Slot dates {string.Join(", ", dateErrors)} must be within the first week of the current semester");
+
+            if (durationErrors.Any())
+                errorMessages.Add(
+                    $"Slots must be at least 1.5 hours long. Invalid slots: {string.Join(", ", durationErrors)}");
+
+            return Result.Failure(new Error("400", string.Join(". ", errorMessages)));
+        }
+
+        // Create slots (parallel is safe here as it's just object creation)
+        var newSlots = request.SlotModels
+            .AsParallel()
+            .Select(slotModel => new Slot
+            {
+                Id = Guid.NewGuid(),
+                MentorId = mentor.Id,
+                StartTime = TimeOnly.Parse(slotModel.StartTime),
+                EndTime = TimeOnly.Parse(slotModel.EndTime),
+                Date = Parse(slotModel.Date),
+                Note = slotModel.Note,
+                IsOnline = slotModel.IsOnline,
+                Month = (short)Parse(slotModel.Date).Month
+            })
+            .ToList();
+
+        // Check for overlaps within the request (no DB operations)
+        var overlapResult = CheckForOverlapsInRequestOptimized(newSlots);
         if (overlapResult.IsFailure)
             return overlapResult;
 
-        // Fetch existing slots for the mentor
-        var existingSlots = slotRepository.FindAll(x => x.MentorId == mentor.Id);
+        // Fetch existing slots synchronously to avoid context threading issues
+        var existingSlots = slotRepository
+            .FindAll(x => x.MentorId == mentor.Id)
+            .ToList();
 
-        // Check for overlaps with existing slots
-        foreach (var newSlot in newSlots.Where(newSlot => HasOverlap(newSlot, existingSlots)))
+        // Check for overlaps (no DB operations)
+        var overlappingSlots = FindOverlappingSlots(newSlots, existingSlots);
+
+        if (overlappingSlots.Count != 0)
         {
-            return Result.Failure(new Error("409", $"Slot overlaps with existing slot: {newSlot.Date} {newSlot.StartTime}-{newSlot.EndTime}"));
+            var firstOverlap = overlappingSlots.First();
+            return Result.Failure(new Error("409",
+                $"Slot overlaps with existing slot: {firstOverlap.Date} {firstOverlap.StartTime}-{firstOverlap.EndTime}"));
         }
 
+        // Use regular AddRange since AddRangeAsync isn't available
         slotRepository.AddRange(newSlots);
-      
         mentor.CreateSlot(newSlots);
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        
+
         return Result.Success();
     }
 
-    private static Result CheckForOverlapsInRequest(List<Slot> slots)
+    private static Result CheckForOverlapsInRequestOptimized(List<Slot> slots)
     {
-        for (var i = 0; i < slots.Count; i++)
+        var sortedSlots = slots
+            .OrderBy(s => s.Date)
+            .ThenBy(s => s.StartTime)
+            .ToList();
+
+        for (var i = 0; i < sortedSlots.Count - 1; i++)
         {
-            for (var j = i + 1; j < slots.Count; j++)
+            var current = sortedSlots[i];
+            var next = sortedSlots[i + 1];
+
+            if (current.Date == next.Date && current.EndTime > next.StartTime)
             {
-                if (AreOverlapping(slots[i], slots[j]))
-                {
-                    return Result.Failure(new Error("409", $"Overlapping slots in request: " +
-                        $"{slots[i].Date} {slots[i].StartTime}-{slots[i].EndTime} and " +
-                        $"{slots[j].Date} {slots[j].StartTime}-{slots[j].EndTime}"));
-                }
+                return Result.Failure(new Error("409",
+                    $"Overlapping slots in request: {current.Date} {current.StartTime}-{current.EndTime} and " +
+                    $"{next.Date} {next.StartTime}-{next.EndTime}"));
             }
         }
+
         return Result.Success();
     }
 
-    private static bool HasOverlap(Slot newSlot, IEnumerable<Slot> existingSlots)
+    private static List<Slot> FindOverlappingSlots(List<Slot> newSlots, List<Slot> existingSlots)
     {
-        return existingSlots.Any(existingSlot => AreOverlapping(newSlot, existingSlot));
-    }
+        var existingSlotsByDate = existingSlots
+            .GroupBy(s => s.Date)
+            .ToDictionary(g => g.Key, g => g.ToList());
 
-    private static bool AreOverlapping(Slot slot1, Slot slot2)
-    {
-        return slot1.Date == slot2.Date &&
-               slot1.StartTime < slot2.EndTime &&
-               slot2.StartTime < slot1.EndTime;
+        return newSlots
+            .Where(newSlot =>
+                existingSlotsByDate.TryGetValue(newSlot.Date, out var slotsOnSameDay) &&
+                slotsOnSameDay.Any(existingSlot =>
+                    newSlot.StartTime < existingSlot.EndTime &&
+                    existingSlot.StartTime < newSlot.EndTime))
+            .ToList();
     }
 }

@@ -8,7 +8,7 @@ public class SlotApi : ApiEndpoint,ICarterModule
     {
         var gr1 = app.NewVersionedApi("Slots").MapGroup(BaseUrl).HasApiVersion(1);
         gr1.MapPost(string.Empty, CreateSlot).WithSummary("mm/dd/yyyy");
-        gr1.MapGet("generate", GenerateSlotForSemester);
+        gr1.MapPost("generate", GenerateSlotForSemester);
     }
 
     private static async Task<IResult> CreateSlot(ISender sender,[FromBody] Command.CreateSlot command)
