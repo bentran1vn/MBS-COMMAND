@@ -1,4 +1,4 @@
-﻿using MBS_COMMAND.Contract.Abstractions.Messages;
+using MBS_COMMAND.Contract.Abstractions.Messages;
 using MBS_COMMAND.Contract.Abstractions.Shared;
 using MBS_COMMAND.Contract.Services.Feedbacks;
 using MBS_COMMAND.Domain.Abstractions;
@@ -21,7 +21,7 @@ public class CreateFeedbackCommandHandler : ICommandHandler<Command.CreateFeedba
 
     public async Task<Result> Handle(Command.CreateFeedback request, CancellationToken cancellationToken)
     {
-        var role = _currentUserService.Role == "2";
+        var role = _currentUserService.Role == "1";
         var feedback = new Feedback
         {
             Content = request.Content,
