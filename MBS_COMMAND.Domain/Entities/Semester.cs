@@ -2,7 +2,7 @@
 
 namespace MBS_COMMAND.Domain.Entities;
 
-public class Semester : Entity<Guid>, IAuditableEntity
+public class  Semester : Entity<Guid>, IAuditableEntity
 {
     public string Name { get; set; }
     public DateOnly From { get; set; }

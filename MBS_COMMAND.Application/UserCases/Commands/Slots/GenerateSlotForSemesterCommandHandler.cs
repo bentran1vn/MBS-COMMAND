@@ -25,7 +25,7 @@ public sealed class GenerateSlotForSemesterCommandHandler(
 
         // Get all mentors in parallel with first week slots
         var mentors = await userRepository
-            .FindAll(x => x.Role == 2)
+            .FindAll(x => x.Role == 1)
             .AsTracking()
             .ToListAsync(cancellationToken);
 

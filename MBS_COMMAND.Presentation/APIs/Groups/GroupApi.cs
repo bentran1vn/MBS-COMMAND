@@ -12,7 +12,7 @@ public class GroupApi : ApiEndpoint, ICarterModule
         gr1.MapPost(string.Empty, CreateGroup).RequireAuthorization();
         gr1.MapPost("member", AddMemberToGroup);
         gr1.MapDelete("member", RemoveMemberFromGroup);
-        gr1.MapPut("change-leader", ChangeLeader).WithSummary("must login in order to use this api");
+        gr1.MapPut("member", ChangeLeader).WithSummary("must login in order to use this api");
         gr1.MapPut(string.Empty, UpdateGroup);
         gr1.MapGet("accept-invitation/{groupId}/{memberId}", AcceptGroupInvitation);
         gr1.MapPost("mentor", AddMentorToGroup);
@@ -30,10 +30,7 @@ public class GroupApi : ApiEndpoint, ICarterModule
     private static async Task<IResult> UpdateGroup(ISender sender, [FromBody] Command.UpdateGroup updateGroup)
     {
         var result = await sender.Send(updateGroup);
-        if (result.IsFailure)
-            return HandlerFailure(result);
-
-        return Results.Ok(result);
+        return result.IsFailure ? HandlerFailure(result) : Results.Ok(result);
     }
 
     private static async Task<IResult> ChangeLeader(ISender sender, [FromBody] Command.ChangeLeader request)

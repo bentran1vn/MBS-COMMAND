@@ -10,6 +10,7 @@ namespace MBS_COMMAND.Application.UserCases.Commands.Slots;
 public sealed class CreateSlotCommandHandler(
     IRepositoryBase<Slot, Guid> slotRepository,
     IRepositoryBase<User, Guid> userRepository,
+    ICurrentUserService currentUserService,
     IRepositoryBase<Semester, Guid> semesterRepository,
     IUnitOfWork unitOfWork)
     : ICommandHandler<Command.CreateSlot>
@@ -17,7 +18,7 @@ public sealed class CreateSlotCommandHandler(
     public async Task<Result> Handle(Command.CreateSlot request, CancellationToken cancellationToken)
     {
         // Parallel fetch of mentor and current semester
-        var mentor = await userRepository.FindByIdAsync(request.MentorId, cancellationToken);
+        var mentor = await userRepository.FindByIdAsync(Guid.Parse(currentUserService.UserId!), cancellationToken);
         if (mentor == null)
             return Result.Failure(new Error("404", "User Not Found"));
 

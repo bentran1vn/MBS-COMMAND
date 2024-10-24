@@ -27,7 +27,6 @@ public sealed class AddMemberToGroupCommandHandler(
             return Result.Failure(new Error("404", "Group Not Found"));
         if (g.Members!.Any(x => x.StudentId == u.Id))
             return Result.Failure(new Error("422", "Member already joined group"));
-        //g.Members!.Add(new Group_Student_Mapping { StudentId = u.Id, GroupId = g.Id });
         var domain = configuration["Domain"];
         await mailService.SendMail(new MailContent
         {
@@ -41,10 +40,6 @@ public sealed class AddMemberToGroupCommandHandler(
         </a>
     "
         });
-
-
-        //send mail to user
-
         return Result.Success();
     }
 }

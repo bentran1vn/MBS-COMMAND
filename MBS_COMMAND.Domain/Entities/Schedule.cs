@@ -1,4 +1,5 @@
-﻿using MBS_COMMAND.Domain.Abstractions.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+using MBS_COMMAND.Domain.Abstractions.Entities;
 
 namespace MBS_COMMAND.Domain.Entities;
 
@@ -14,6 +15,9 @@ public class Schedule : Entity<Guid>, IAuditableEntity
     public TimeOnly EndTime { get; set; }
     public DateOnly Date { get; set; }
     public Guid SubjectId { get; set; }
+    
+    public string? Description { get; set; }
+    
     public virtual Subject? Subject { get; set; }
     public DateTimeOffset CreatedOnUtc { get ; set ; }
     public DateTimeOffset? ModifiedOnUtc { get ; set ; }
