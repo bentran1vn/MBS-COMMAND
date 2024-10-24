@@ -4,7 +4,6 @@ using MBS_CONTRACT.SHARE.Services.Users;
 using static MBS_CONTRACT.SHARE.Services.Mentors.DomainEvent;
 
 namespace MBS_COMMAND.Domain.Entities;
-
 public class User : AggregateRoot<Guid>, IAuditableEntity
 {
     public string Email { get; set; }

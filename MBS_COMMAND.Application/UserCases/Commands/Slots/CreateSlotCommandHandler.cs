@@ -40,11 +40,11 @@ public sealed class CreateSlotCommandHandler(
 
                 return new
                 {
-                    Date = x.Date,
+                    x.Date,
                     StartTime = startTime,
                     EndTime = endTime,
                     IsDateInvalid = date < currentSemester.From || date > semesterEndDate,
-                    IsDurationInvalid = duration < TimeSpan.FromHours(1.5)
+                    IsDurationInvalid = duration < TimeSpan.FromMinutes(30) || duration > TimeSpan.FromHours(1)
                 };
             })
             .Where(x => x.IsDateInvalid || x.IsDurationInvalid)
@@ -68,7 +68,7 @@ public sealed class CreateSlotCommandHandler(
 
             if (durationErrors.Any())
                 errorMessages.Add(
-                    $"Slots must be at least 1.5 hours long. Invalid slots: {string.Join(", ", durationErrors)}");
+                    $"Slots must be between 30 minutes and 1 hour long. Invalid slots: {string.Join(", ", durationErrors)}");
 
             return Result.Failure(new Error("400", string.Join(". ", errorMessages)));
         }
