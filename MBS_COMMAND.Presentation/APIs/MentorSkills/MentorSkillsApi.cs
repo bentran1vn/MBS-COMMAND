@@ -32,7 +32,7 @@ public class MentorSkillsApi : ApiEndpoint, ICarterModule
         command.MentorId = new Guid(userId);
         
         var result = await sender.Send(command);
-        
+         
         if (result.IsFailure)
             return HandlerFailure(result);
 

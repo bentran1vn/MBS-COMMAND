@@ -14,6 +14,7 @@ public class Command
         
         public Guid SlotId { get; set; }
         public Guid SubjectId { get; set; }
+        public Guid ProjectId { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }
     }

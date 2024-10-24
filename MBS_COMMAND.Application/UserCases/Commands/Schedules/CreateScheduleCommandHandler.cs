@@ -32,7 +32,7 @@ public class CreateScheduleCommandHandler : ICommandHandler<Command.CreateSchedu
             return Result.Failure(new Error("400", "User is not exist !"));
         }
 
-        var group = await _groupRepository.FindSingleAsync(x => x.LeaderId.Equals(user.Id), cancellationToken);
+        var group = await _groupRepository.FindSingleAsync(x => x.LeaderId.Equals(user.Id) && x.ProjectId.Equals(request.ProjectId), cancellationToken);
         
         if (group == null || group.IsDeleted)
         {
@@ -76,6 +76,7 @@ public class CreateScheduleCommandHandler : ICommandHandler<Command.CreateSchedu
             MentorId = slot.MentorId ?? new Guid(),
             SubjectId = request.SubjectId,
             GroupId = group.Id,
+            SlotId = slot.Id
         };
 
         slot.IsBook = true;
