@@ -33,6 +33,7 @@ public class User : AggregateRoot<Guid>, IAuditableEntity
     {
         var slot = slots.Select(x => new DomainEvent.Slot
         {
+            SlotId = x.Id,
             MentorId = x.MentorId,
             StartTime = x.StartTime,
             EndTime = x.EndTime,
@@ -43,7 +44,5 @@ public class User : AggregateRoot<Guid>, IAuditableEntity
             IsBook = x.IsBook,
         }).ToList();
         RaiseDomainEvent(new DomainEvent.MentorSlotCreated(Guid.NewGuid(), slot));
-        Console.BackgroundColor = ConsoleColor.DarkGreen;
-        Console.WriteLine("MentorSlotCreatedDomainevent");
     }
 }

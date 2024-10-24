@@ -7,21 +7,15 @@ using MBS_COMMAND.Domain.Entities;
 
 namespace MBS_COMMAND.Application.UserCases.Commands.Feedbacks;
 
-public class CreateFeedbackCommandHandler : ICommandHandler<Command.CreateFeedback>
+public class CreateFeedbackCommandHandler(
+    IRepositoryBase<Feedback, Guid> feedbackRepository,
+    ICurrentUserService currentUserService,
+    IUnitOfWork unitOfWork)
+    : ICommandHandler<Command.CreateFeedback>
 {
-    private readonly IRepositoryBase<Feedback, Guid> _feedbackRepository;
-    private readonly ICurrentUserService _currentUserService;
-    private readonly IUnitOfWork _unitOfWork;
-    public CreateFeedbackCommandHandler(IRepositoryBase<Feedback, Guid> feedbackRepository, ICurrentUserService currentUserService, IUnitOfWork unitOfWork)
-    {
-        _feedbackRepository = feedbackRepository;
-        _currentUserService = currentUserService;
-        _unitOfWork = unitOfWork;
-    }
-
     public async Task<Result> Handle(Command.CreateFeedback request, CancellationToken cancellationToken)
     {
-        var role = _currentUserService.Role == "1";
+        var role = currentUserService.Role == "1";
         var feedback = new Feedback
         {
             Content = request.Content,
@@ -30,8 +24,8 @@ public class CreateFeedbackCommandHandler : ICommandHandler<Command.CreateFeedba
             ScheduleId = request.ScheduleId,
             IsMentor = role,
         };
-        _feedbackRepository.Add(feedback);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        feedbackRepository.Add(feedback);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success();
     }
 }
