@@ -1,6 +1,5 @@
 ﻿using MBS_COMMAND.Domain.Abstractions.Aggregates;
 using MBS_COMMAND.Domain.Abstractions.Entities;
-using MBS_CONTRACT.SHARE.Services.Groups;
 using MBS_CONTRACT.SHARE.Services.Slots;
 
 namespace MBS_COMMAND.Domain.Entities;
@@ -19,20 +18,9 @@ public class Slot : AggregateRoot<Guid>, IAuditableEntity
     public DateTimeOffset CreatedOnUtc { get; set; }
     public DateTimeOffset? ModifiedOnUtc { get; set; }
 
-    public void CreateSlot(IEnumerable<Slot> slots)
+    public void ChangeSlotStatusInToBooked(Guid SlotId)
     {
-        var slot = slots.Select(x => new DomainEvent.Slot
-        {
-            MentorId = x.MentorId,
-            StartTime = x.StartTime,
-            EndTime = x.EndTime,
-            Date = x.Date,
-            IsOnline = x.IsOnline,
-            Note = x.Note,
-            Month = x.Month,
-            IsBook = x.IsBook,
-        }).ToList();
-        RaiseDomainEvent(new DomainEvent.SlotsCreated(Guid.NewGuid(), slot));
+        RaiseDomainEvent(new DomainEvent.ChangeSlotStatusInToBooked(Guid.NewGuid(), SlotId));;
     }
 
 }

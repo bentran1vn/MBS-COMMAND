@@ -5,7 +5,6 @@ using MBS_COMMAND.Domain.Abstractions.Repositories;
 using MBS_COMMAND.Domain.Entities;
 
 namespace MBS_COMMAND.Application.UserCases.Commands.Schedules;
-
 public class CreateScheduleCommandHandler : ICommandHandler<Command.CreateScheduleCommand>
 {
     private readonly IRepositoryBase<User, Guid> _userRepository;
@@ -14,7 +13,9 @@ public class CreateScheduleCommandHandler : ICommandHandler<Command.CreateSchedu
     private readonly IRepositoryBase<Subject, Guid> _subjectRepository;
     private readonly IRepositoryBase<Schedule, Guid> _scheduleRepository;
 
-    public CreateScheduleCommandHandler(IRepositoryBase<User, Guid> userRepository, IRepositoryBase<Group, Guid> groupRepository, IRepositoryBase<Slot, Guid> slotRepository, IRepositoryBase<Subject, Guid> subjectRepository, IRepositoryBase<Schedule, Guid> scheduleRepository)
+    public CreateScheduleCommandHandler(IRepositoryBase<User, Guid> userRepository,
+        IRepositoryBase<Group, Guid> groupRepository, IRepositoryBase<Slot, Guid> slotRepository,
+        IRepositoryBase<Subject, Guid> subjectRepository, IRepositoryBase<Schedule, Guid> scheduleRepository)
     {
         _userRepository = userRepository;
         _groupRepository = groupRepository;
@@ -32,15 +33,15 @@ public class CreateScheduleCommandHandler : ICommandHandler<Command.CreateSchedu
             return Result.Failure(new Error("400", "User is not exist !"));
         }
 
-        var group = await _groupRepository.FindSingleAsync(x => x.LeaderId.Equals(user.Id) && x.ProjectId.Equals(request.ProjectId), cancellationToken);
-        
+        var group = await _groupRepository.FindSingleAsync(x => x.LeaderId.Equals(user.Id), cancellationToken);
+
         if (group == null || group.IsDeleted)
         {
             return Result.Failure(new Error("403", "Must own a group !"));
         }
 
         var slot = await _slotRepository.FindByIdAsync(request.SlotId, cancellationToken);
-        
+
         if (slot == null || group.IsDeleted)
         {
             return Result.Failure(new Error("400", "Slot is not exist !"));
@@ -52,7 +53,7 @@ public class CreateScheduleCommandHandler : ICommandHandler<Command.CreateSchedu
         }
 
         var subject = await _subjectRepository.FindByIdAsync(request.SubjectId, cancellationToken);
-        
+
         if (subject == null || subject.IsDeleted)
         {
             return Result.Failure(new Error("400", "Subject is not exist !"));
@@ -60,7 +61,7 @@ public class CreateScheduleCommandHandler : ICommandHandler<Command.CreateSchedu
 
         var start = TimeOnly.Parse(request.StartTime);
         var end = TimeOnly.Parse(request.EndTime);
-        
+
         if (start.CompareTo(slot.StartTime) < 0 ||
             end.CompareTo(slot.EndTime) > 0)
         {
@@ -80,9 +81,9 @@ public class CreateScheduleCommandHandler : ICommandHandler<Command.CreateSchedu
         };
 
         slot.IsBook = true;
-        
+        slot.ChangeSlotStatusInToBooked(slot.Id);
         _scheduleRepository.Add(schedule);
-        
+
         return Result.Success("Booking Schedule Successfully !");
     }
 }

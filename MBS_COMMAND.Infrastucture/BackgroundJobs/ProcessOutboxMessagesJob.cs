@@ -79,15 +79,17 @@ public class ProcessOutboxMessagesJob : IJob
                                 });
                         await _publishEndpoint.Publish(MentorSlotCreated, context.CancellationToken);
                         break;
-                    case nameof(ServicesShared.Slots.DomainEvent.SlotsCreated):
-                        var slotsCreated = JsonConvert.DeserializeObject<ServicesShared.Slots.DomainEvent.SlotsCreated>(
-                            outboxMessage.Content,
-                            new JsonSerializerSettings
-                            {
-                                TypeNameHandling = TypeNameHandling.All
-                            });
+                    case nameof(ServicesShared.Slots.DomainEvent.ChangeSlotStatusInToBooked):
+                        var ChangeSlotStatusInToBooked =
+                            JsonConvert.DeserializeObject<ServicesShared.Slots.DomainEvent.ChangeSlotStatusInToBooked>(
+                                outboxMessage.Content,
+                                new JsonSerializerSettings
+                                {
+                                    TypeNameHandling = TypeNameHandling.All
+                                });
                         
-                        await _publishEndpoint.Publish(slotsCreated, context.CancellationToken);
+                        
+                        await _publishEndpoint.Publish(ChangeSlotStatusInToBooked, context.CancellationToken);
                         break;
                 }
 

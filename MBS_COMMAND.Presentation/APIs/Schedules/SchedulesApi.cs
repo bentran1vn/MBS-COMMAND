@@ -15,7 +15,7 @@ public class SchedulesApi : ApiEndpoint, ICarterModule
         var gr1 = app.NewVersionedApi("Schedules")
             .MapGroup(BaseUrl).HasApiVersion(1);
 
-        gr1.MapPost("", CreateSchedules).RequireAuthorization(RoleNames.Student);
+        gr1.MapPost("", CreateSchedules);
     }
     
     public static async Task<IResult> CreateSchedules(ISender sender, HttpContext context, IJwtTokenService jwtTokenService,
