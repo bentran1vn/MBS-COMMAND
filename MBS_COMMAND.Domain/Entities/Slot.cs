@@ -22,5 +22,25 @@ public class Slot : AggregateRoot<Guid>, IAuditableEntity
     {
         RaiseDomainEvent(new DomainEvent.ChangeSlotStatusInToBooked(Guid.NewGuid(), SlotId));;
     }
+    public void SlotUpdated(Slot slot)
+    {
+        var slotEvent = new DomainEvent.Slot()
+        {
+            SlotId = slot.Id,
+            MentorId = slot.MentorId,
+            StartTime = slot.StartTime,
+            EndTime = slot.EndTime,
+            Date = slot.Date,
+            IsOnline = slot.IsOnline,
+            Note = slot.Note,
+            Month = slot.Month,
+            IsBook = slot.IsBook,
+            IsDeleted = slot.IsDeleted,
+            CreatedOnUtc = slot.CreatedOnUtc,
+            ModifiedOnUtc = slot.ModifiedOnUtc
+
+        };
+        RaiseDomainEvent(new DomainEvent.SlotUpdated(Guid.NewGuid(), slotEvent));
+    }
 
 }

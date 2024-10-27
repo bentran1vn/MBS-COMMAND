@@ -87,9 +87,21 @@ public class ProcessOutboxMessagesJob : IJob
                                 {
                                     TypeNameHandling = TypeNameHandling.All
                                 });
-                        
-                        
+
+
                         await _publishEndpoint.Publish(ChangeSlotStatusInToBooked, context.CancellationToken);
+                        break;
+                    case nameof(ServicesShared.Slots.DomainEvent.SlotUpdated):
+                        var SlotUpdated =
+                            JsonConvert.DeserializeObject<ServicesShared.Slots.DomainEvent.SlotUpdated>(
+                                outboxMessage.Content,
+                                new JsonSerializerSettings
+                                {
+                                    TypeNameHandling = TypeNameHandling.All
+                                });
+                        await _publishEndpoint.Publish(SlotUpdated, context.CancellationToken);
+                        Console.WriteLine("SlotUpdated");
+                        Console.BackgroundColor = ConsoleColor.Red;
                         break;
                 }
 
