@@ -32,8 +32,8 @@ public class CreateScheduleCommandHandler : ICommandHandler<Command.CreateSchedu
         {
             return Result.Failure(new Error("400", "User is not exist !"));
         }
-
-       var group = await _groupRepository.FindSingleAsync(x => x.LeaderId.Equals(user.Id) && x.ProjectId.Equals(request.ProjectId), cancellationToken);
+        
+        var group = await _groupRepository.FindSingleAsync(x => x.LeaderId.Equals(user.Id) && x.ProjectId.Equals(request.ProjectId), cancellationToken);
 
         if (group == null || group.IsDeleted)
         {
@@ -59,20 +59,25 @@ public class CreateScheduleCommandHandler : ICommandHandler<Command.CreateSchedu
             return Result.Failure(new Error("400", "Subject is not exist !"));
         }
 
-        var start = TimeOnly.Parse(request.StartTime);
-        var end = TimeOnly.Parse(request.EndTime);
+        var start = TimeOnly.TryParse(request.StartTime, out TimeOnly newStart);
+        var end = TimeOnly.TryParse(request.EndTime, out TimeOnly newEnd);
 
-        if (start.CompareTo(slot.StartTime) < 0 ||
-            end.CompareTo(slot.EndTime) > 0)
+        if (newStart.CompareTo(slot.StartTime) < 0 ||
+            newEnd.CompareTo(slot.EndTime) > 0)
         {
             return Result.Failure(new Error("500", "Invalid booking time !"));
+        }
+
+        if ((newEnd - newStart).TotalHours < 30)
+        {
+            return Result.Failure(new Error("500", "Booking times must larger than 30 minutes !"));
         }
 
         var schedule = new Schedule()
         {
             Id = Guid.NewGuid(),
-            StartTime = start,
-            EndTime = end,
+            StartTime = newStart,
+            EndTime = newEnd,
             Date = slot.Date,
             MentorId = slot.MentorId ?? new Guid(),
             SubjectId = request.SubjectId,
