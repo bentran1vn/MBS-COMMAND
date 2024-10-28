@@ -22,10 +22,9 @@ public class CreateScheduleCommandHandler(
             return Result.Failure(new Error("404", "User is not exist !"));
         }
 
-        var group = await groupRepository.FindSingleAsync(
-            x => x.LeaderId.Equals(user.Id) && x.ProjectId.Equals(request.ProjectId), cancellationToken);
+        var group = await groupRepository.FindByIdAsync(request.GroupId, cancellationToken);
 
-        if (group == null || group.IsDeleted)
+        if (group == null || group.IsDeleted || !group.LeaderId.Equals(user.Id))
         {
             return Result.Failure(new Error("403", "Must own a group !"));
         }
