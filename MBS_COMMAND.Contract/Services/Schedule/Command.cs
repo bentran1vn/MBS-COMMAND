@@ -28,4 +28,12 @@ public class Command
         public string StartTime { get; set; }
         public string EndTime { get; set; }
     }
+    
+    public record DeleteScheduleCommand : ICommand
+    {
+        [SwaggerSchema(ReadOnly = true)]
+        [DefaultValue("e824c924-e441-4367-a03b-8dd13223f76f")]
+        public Guid UserId { get; set; }
+        public Guid ScheduleId { get; set; }
+    }
 }

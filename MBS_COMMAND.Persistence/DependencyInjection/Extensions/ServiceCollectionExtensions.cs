@@ -20,6 +20,7 @@ public static class ServiceCollectionExtensions
             // Interceptor
             var outboxInterceptor = provider.GetService<ConvertDomainEventsToOutboxMessagesInterceptor>();
             var auditableInterceptor = provider.GetService<UpdateAuditableEntitiesInterceptor>();
+            var deletableInterceptor = provider.GetService<DeleteAuditableEntitiesInterceptor>();
 
             var configuration = provider.GetRequiredService<IConfiguration>();
             var options = provider.GetRequiredService<IOptionsMonitor<SqlServerRetryOptions>>();
@@ -40,8 +41,10 @@ public static class ServiceCollectionExtensions
                                     maxRetryDelay: options.CurrentValue.MaxRetryDelay,
                                     errorNumbersToAdd: options.CurrentValue.ErrorNumbersToAdd))
                             .MigrationsAssembly(typeof(ApplicationDbContext).Assembly.GetName().Name))
-            .AddInterceptors(outboxInterceptor,
-                    auditableInterceptor);
+            .AddInterceptors(
+                outboxInterceptor,
+                auditableInterceptor,
+                deletableInterceptor);
 
             #endregion ============== SQL-SERVER-STRATEGY-1 ==============
 
@@ -65,6 +68,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<ConvertDomainEventsToOutboxMessagesInterceptor>();
         services.AddSingleton<UpdateAuditableEntitiesInterceptor>();
+        services.AddSingleton<DeleteAuditableEntitiesInterceptor>();
     }
 
     public static void AddRepositoryPersistence(this IServiceCollection services)

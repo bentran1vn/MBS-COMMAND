@@ -1,3 +1,4 @@
+using MBS_COMMAND.Contract.Abstractions.Messages;
 using MBS_COMMAND.Contract.Abstractions.Shared;
 using MBS_COMMAND.Contract.Services.Schedule;
 using MBS_COMMAND.Domain.Abstractions.Repositories;
@@ -6,7 +7,7 @@ using MBS_COMMAND.Domain.Entities;
 
 namespace MBS_COMMAND.Application.UserCases.Commands.Schedules;
 
-public class UpdateScheduleCommandHandler : Contract.Abstractions.Messages.ICommandHandler<Command.UpdateScheduleCommand>
+public class UpdateScheduleCommandHandler : ICommandHandler<Command.UpdateScheduleCommand>
 {
     private readonly IRepositoryBase<Schedule, Guid> _scheduleRepository;
     private readonly IRepositoryBase<User, Guid> _userRepository;
@@ -46,6 +47,7 @@ public class UpdateScheduleCommandHandler : Contract.Abstractions.Messages.IComm
         {
             var start = TimeOnly.TryParse(request.StartTime, out TimeOnly newStart);
             var end = TimeOnly.TryParse(request.EndTime, out TimeOnly newEnd);
+            
             if (!start || newStart < scheduleExist.StartTime)
             {
                 return Result.Failure(new Error("500", "New StartTime must be valid!")); 
@@ -53,6 +55,11 @@ public class UpdateScheduleCommandHandler : Contract.Abstractions.Messages.IComm
             if (!end || newEnd > scheduleExist.EndTime)
             {
                 return Result.Failure(new Error("500", "New EndTime must be valid!")); 
+            }
+            
+            if ((newEnd - newStart).TotalHours < 30)
+            {
+                return Result.Failure(new Error("500", "Booking times must larger than 30 minutes !"));
             }
 
             scheduleExist.StartTime = newStart;

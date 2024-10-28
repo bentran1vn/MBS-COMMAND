@@ -21,7 +21,8 @@ public class SchedulesApi : ApiEndpoint, ICarterModule
         gr1.MapPut(String.Empty, UpdateSchedules)
             .RequireAuthorization(RoleNames.Student);
         
-        gr1.MapDelete(String.Empty, CreateSchedules);
+        gr1.MapDelete(String.Empty, DeleteSchedules)
+            .RequireAuthorization(RoleNames.Student);
     }
     
     public static async Task<IResult> CreateSchedules(ISender sender, HttpContext context, IJwtTokenService jwtTokenService,
@@ -59,7 +60,7 @@ public class SchedulesApi : ApiEndpoint, ICarterModule
     }
     
     public static async Task<IResult> DeleteSchedules(ISender sender, HttpContext context, IJwtTokenService jwtTokenService,
-        [FromBody] Command.CreateScheduleCommand command)
+        [FromBody] Command.DeleteScheduleCommand command)
     {
         var accessToken = await context.GetTokenAsync("access_token");
         var (claimPrincipal, _)  = jwtTokenService.GetPrincipalFromExpiredToken(accessToken!);
