@@ -15,10 +15,50 @@ public class SchedulesApi : ApiEndpoint, ICarterModule
         var gr1 = app.NewVersionedApi("Schedules")
             .MapGroup(BaseUrl).HasApiVersion(1);
 
-        gr1.MapPost("", CreateSchedules);
+        gr1.MapPost(String.Empty, CreateSchedules)
+            .RequireAuthorization(RoleNames.Student);
+        
+        gr1.MapPut(String.Empty, UpdateSchedules)
+            .RequireAuthorization(RoleNames.Student);
+        
+        gr1.MapDelete(String.Empty, CreateSchedules);
     }
     
     public static async Task<IResult> CreateSchedules(ISender sender, HttpContext context, IJwtTokenService jwtTokenService,
+        [FromBody] Command.CreateScheduleCommand command)
+    {
+        var accessToken = await context.GetTokenAsync("access_token");
+        var (claimPrincipal, _)  = jwtTokenService.GetPrincipalFromExpiredToken(accessToken!);
+        var userId = claimPrincipal.Claims.FirstOrDefault(c => c.Type == "UserId")!.Value;
+
+        command.UserId = new Guid(userId);
+        
+        var result = await sender.Send(command);
+        
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
+    
+    public static async Task<IResult> UpdateSchedules(ISender sender, HttpContext context, IJwtTokenService jwtTokenService,
+        [FromBody] Command.UpdateScheduleCommand command)
+    {
+        var accessToken = await context.GetTokenAsync("access_token");
+        var (claimPrincipal, _)  = jwtTokenService.GetPrincipalFromExpiredToken(accessToken!);
+        var userId = claimPrincipal.Claims.FirstOrDefault(c => c.Type == "UserId")!.Value;
+
+        command.UserId = new Guid(userId);
+        
+        var result = await sender.Send(command);
+        
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
+    
+    public static async Task<IResult> DeleteSchedules(ISender sender, HttpContext context, IJwtTokenService jwtTokenService,
         [FromBody] Command.CreateScheduleCommand command)
     {
         var accessToken = await context.GetTokenAsync("access_token");
