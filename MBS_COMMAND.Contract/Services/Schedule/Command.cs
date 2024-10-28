@@ -4,7 +4,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace MBS_COMMAND.Contract.Services.Schedule;
 
-public class Command
+public static class Command
 {
     public record CreateScheduleCommand : ICommand
     {

@@ -267,9 +267,6 @@ namespace MBS_COMMAND.Persistence.Migrations
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<TimeOnly>("EndTime")
                         .HasColumnType("time");
 
