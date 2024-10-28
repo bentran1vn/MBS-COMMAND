@@ -1,3 +1,4 @@
+using MBS_COMMAND.Contract.Abstractions.Messages;
 using MBS_COMMAND.Contract.Abstractions.Shared;
 using MBS_COMMAND.Contract.Services.Schedule;
 using MBS_COMMAND.Domain.Abstractions.Repositories;
@@ -6,7 +7,7 @@ using MBS_COMMAND.Domain.Entities;
 
 namespace MBS_COMMAND.Application.UserCases.Commands.Schedules;
 
-public class UpdateScheduleCommandHandler : Contract.Abstractions.Messages.ICommandHandler<Command.UpdateScheduleCommand>
+public class UpdateScheduleCommandHandler : ICommandHandler<Command.UpdateScheduleCommand>
 {
     private readonly IRepositoryBase<Schedule, Guid> _scheduleRepository;
     private readonly IRepositoryBase<User, Guid> _userRepository;
