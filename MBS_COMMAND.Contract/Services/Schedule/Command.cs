@@ -37,5 +37,5 @@ public static class Command
         public Guid ScheduleId { get; set; }
     }
     
-    public record AcceptScheduleCommand(Guid ScheduleId) : ICommand;
+    public record AcceptScheduleCommand(Guid ScheduleId,int Status) : ICommand;
 }

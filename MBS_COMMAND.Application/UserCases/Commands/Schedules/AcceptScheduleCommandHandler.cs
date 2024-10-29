@@ -25,7 +25,7 @@ public class AcceptScheduleCommandHandler : ICommandHandler<Command.AcceptSchedu
             return Result.Failure(new Error("404", "Schedule not found"));
         }
 
-        slot.IsAccepted = true;
+        slot.IsAccepted = request.Status;
         _scheduleRepository.Update(slot);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success();

@@ -48,7 +48,7 @@ public class CreateScheduleCommandHandler(
             return Result.Failure(new Error("404", "Subject is not exist !"));
         }
 
-        var isAccepted = group.MentorId == slot.MentorId;
+        var isAccepted = group.MentorId == slot.MentorId? 1 : 0;
         var start = TimeOnly.Parse(request.StartTime);
         var end = TimeOnly.Parse(request.EndTime);
         
