@@ -51,11 +51,16 @@ public class CreateScheduleCommandHandler(
         var isAccepted = group.MentorId == slot.MentorId;
         var start = TimeOnly.Parse(request.StartTime);
         var end = TimeOnly.Parse(request.EndTime);
-
+        
         if (start.CompareTo(slot.StartTime) < 0 ||
             end.CompareTo(slot.EndTime) > 0)
         {
             return Result.Failure(new Error("500", "Invalid booking time !"));
+        }
+        
+        if ((end - start).TotalHours < 30)
+        {
+            return Result.Failure(new Error("500", "Booking times must larger than 30 minutes !"));
         }
 
         var schedule = new Schedule
