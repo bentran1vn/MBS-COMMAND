@@ -23,6 +23,13 @@ public class SchedulesApi : ApiEndpoint, ICarterModule
         gr1.MapDelete(String.Empty, DeleteSchedules)
             .RequireAuthorization(RoleNames.Student);
     }
+    private static async Task<IResult> UpdateStats(Isender sender, Command.AcceptScheduleCommand command)
+    {
+        var result = await sender.Send(command);
+        return result.IsFailure ? HandlerFailure(result) : Results.Ok(result);
+
+
+}
 
     private static async Task<IResult> AcceptSchedule(ISender sender, Command.AcceptScheduleCommand command)
     {
