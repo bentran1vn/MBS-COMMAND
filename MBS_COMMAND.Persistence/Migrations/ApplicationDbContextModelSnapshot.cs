@@ -472,7 +472,10 @@ namespace MBS_COMMAND.Persistence.Migrations
                     b.Property<DateTimeOffset?>("ModifiedOnUtc")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<Guid?>("SlotId")
+                    b.Property<int>("Point")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("ScheduleId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Status")
@@ -483,7 +486,7 @@ namespace MBS_COMMAND.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SlotId");
+                    b.HasIndex("ScheduleId");
 
                     b.HasIndex("UserId");
 
@@ -719,15 +722,15 @@ namespace MBS_COMMAND.Persistence.Migrations
 
             modelBuilder.Entity("MBS_COMMAND.Domain.Entities.Transaction", b =>
                 {
-                    b.HasOne("MBS_COMMAND.Domain.Entities.Slot", "Slot")
+                    b.HasOne("MBS_COMMAND.Domain.Entities.Slot", "Schedule")
                         .WithMany()
-                        .HasForeignKey("SlotId");
+                        .HasForeignKey("ScheduleId");
 
                     b.HasOne("MBS_COMMAND.Domain.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
-                    b.Navigation("Slot");
+                    b.Navigation("Schedule");
 
                     b.Navigation("User");
                 });
