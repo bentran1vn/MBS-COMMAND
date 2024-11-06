@@ -18,7 +18,9 @@ public sealed class CreateSlotCommandHandler(
     public async Task<Result> Handle(Command.CreateSlot request, CancellationToken cancellationToken)
     {
         // Parallel fetch of mentor and current semester
-        var mentor = await userRepository.FindByIdAsync(Guid.Parse(currentUserService.UserId!), cancellationToken);
+        var mentor =
+            await userRepository.FindSingleAsync(x => x.Id == Guid.Parse(currentUserService.UserId!) && x.Status == 1,
+                cancellationToken);
         if (mentor == null)
             return Result.Failure(new Error("404", "User Not Found"));
 
