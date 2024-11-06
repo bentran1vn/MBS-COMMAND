@@ -1,8 +1,12 @@
+using System.Transactions;
 using MBS_COMMAND.Contract.Abstractions.Messages;
 using MBS_COMMAND.Contract.Abstractions.Shared;
 using MBS_COMMAND.Contract.Services.Schedule;
 using MBS_COMMAND.Domain.Abstractions.Repositories;
 using MBS_COMMAND.Domain.Entities;
+using MBS_COMMAND.Persistence;
+using Microsoft.EntityFrameworkCore;
+using Transaction = MBS_COMMAND.Domain.Entities.Transaction;
 
 namespace MBS_COMMAND.Application.UserCases.Commands.Schedules;
 public class CreateScheduleCommandHandler(
@@ -10,7 +14,9 @@ public class CreateScheduleCommandHandler(
     IRepositoryBase<Group, Guid> groupRepository,
     IRepositoryBase<Slot, Guid> slotRepository,
     IRepositoryBase<Subject, Guid> subjectRepository,
-    IRepositoryBase<Schedule, Guid> scheduleRepository)
+    IRepositoryBase<Schedule, Guid> scheduleRepository,
+    ApplicationDbContext dbContext,
+    IRepositoryBase<Transaction, Guid> transactionRepository)
     : ICommandHandler<Command.CreateScheduleCommand>
 {
     public async Task<Result> Handle(Command.CreateScheduleCommand request, CancellationToken cancellationToken)
@@ -22,11 +28,16 @@ public class CreateScheduleCommandHandler(
             return Result.Failure(new Error("404", "User is not exist !"));
         }
 
-        var group = await groupRepository.FindByIdAsync(request.GroupId, cancellationToken);
+        var group = await groupRepository.FindByIdAsync(request.GroupId, cancellationToken, x => x.Members);
 
         if (group == null || group.IsDeleted || !group.LeaderId.Equals(user.Id))
         {
             return Result.Failure(new Error("403", "Must own a group !"));
+        }
+
+        if (group.Members == null || !group.Members.Any() || group.Members.Count < 3)
+        {
+            return Result.Failure(new Error("500", "Your group must have at least 3 members !"));
         }
 
         var slot = await slotRepository.FindByIdAsync(request.SlotId, cancellationToken);
@@ -63,6 +74,18 @@ public class CreateScheduleCommandHandler(
             return Result.Failure(new Error("500", "Booking times must larger than 30 minutes !"));
         }
 
+        var point = await dbContext.Configs.SingleOrDefaultAsync(x => x.Key.Equals("BookingPoints"), cancellationToken);
+
+        if (point == null)
+        {
+            return Result.Failure(new Error("500", "Booking points is not exist !"));
+        }
+
+        if (group.BookingPoint < point!.Value)
+        {
+            return Result.Failure(new Error("500", "Invalid booking point !"));
+        }
+        
         var schedule = new Schedule
         {
             Id = Guid.NewGuid(),
@@ -79,6 +102,20 @@ public class CreateScheduleCommandHandler(
         slot.IsBook = true;
         slot.ChangeSlotStatusInToBooked(slot.Id);
         scheduleRepository.Add(schedule);
+        
+        group.BookingPoint -= point.Value;
+        var memberPoint = point.Value / group.Members.Count;
+
+        var transactions = group.Members.Select(x => new Transaction()
+        {
+            UserId = x.StudentId,
+            ScheduleId = schedule.Id,
+            Date = schedule.Date,
+            Point = memberPoint,
+            Status = 0
+        }).ToList();
+        
+        transactionRepository.AddRange(transactions);
 
         return Result.Success("Booking Schedule Successfully !");
     }
