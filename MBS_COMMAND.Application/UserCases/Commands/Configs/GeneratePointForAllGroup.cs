@@ -8,7 +8,7 @@ using MBS_COMMAND.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace MBS_COMMAND.Application.UserCases.Commands.Configs;
-public class GeneratePointForAllGroup : ICommandHandler<Command.GeneratePoints>
+public class GeneratePointForAllGroup : ICommandHandler<Command.GeneratePointsForAllGroup>
 {
     private readonly IRepositoryBase<Group, Guid> _groupRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -20,7 +20,7 @@ public class GeneratePointForAllGroup : ICommandHandler<Command.GeneratePoints>
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result> Handle(Command.GeneratePoints request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(Command.GeneratePointsForAllGroup request, CancellationToken cancellationToken)
     {
         var groups = await _groupRepository.FindAll().ToListAsync(cancellationToken);
         foreach (var x in groups)

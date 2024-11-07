@@ -22,7 +22,6 @@ public class GeneratePointsCommandHandler : ICommandHandler<Command.GeneratePoin
         _unitOfWork = unitOfWork;
     }
 
-
     public async Task<Result> Handle(Command.GeneratePoints request, CancellationToken cancellationToken)
     {
         var users = await _userRepository.FindAll(x => x.Role == 0 && x.Status == 1).AsTracking()
