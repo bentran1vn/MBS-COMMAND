@@ -145,7 +145,7 @@ namespace MBS_COMMAND.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<double?>("BookingPoint")
+                    b.Property<double?>("BookingPoints")
                         .HasColumnType("float");
 
                     b.Property<DateTimeOffset>("CreatedOnUtc")

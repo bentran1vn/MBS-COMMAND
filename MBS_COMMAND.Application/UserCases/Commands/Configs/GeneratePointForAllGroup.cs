@@ -26,7 +26,7 @@ public class GeneratePointForAllGroup : ICommandHandler<Command.GeneratePoints>
         foreach (var x in groups)
         {
             var totalPoints = x.Members.Sum(x => x.Student.Points);
-            x.BookingPoint = totalPoints;
+            x.BookingPoints = totalPoints;
         }
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);

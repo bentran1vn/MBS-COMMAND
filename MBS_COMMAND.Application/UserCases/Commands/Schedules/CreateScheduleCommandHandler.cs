@@ -91,7 +91,7 @@ public class CreateScheduleCommandHandler(
             return Result.Failure(new Error("500", "Booking points is not exist !"));
         }
 
-        if (group.BookingPoint < point!.Value)
+        if (group.BookingPoints < point!.Value)
         {
             return Result.Failure(new Error("500", "Not enough points to book"));
         }
@@ -113,7 +113,7 @@ public class CreateScheduleCommandHandler(
         slot.ChangeSlotStatusInToBooked(slot.Id);
         scheduleRepository.Add(schedule);
         
-        group.BookingPoint -= point.Value;
+        group.BookingPoints -= point.Value;
         var memberPoint = point.Value / group.Members.Count;
 
         var transactions = group.Members.Select(x => new Transaction()

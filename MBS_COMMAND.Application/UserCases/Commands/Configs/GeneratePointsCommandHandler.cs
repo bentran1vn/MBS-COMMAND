@@ -25,7 +25,8 @@ public class GeneratePointsCommandHandler : ICommandHandler<Command.GeneratePoin
 
     public async Task<Result> Handle(Command.GeneratePoints request, CancellationToken cancellationToken)
     {
-        var users = await _userRepository.FindAll(x => x.Role == 2 && x.Status == 1).AsTracking().ToListAsync(cancellationToken);
+        var users = await _userRepository.FindAll(x => x.Role == 0 && x.Status == 1).AsTracking()
+            .ToListAsync(cancellationToken);
         var point = await _context.Configs.Where(x => x.Key.Equals("PointPerStudent")).Select(x => x.Value)
             .FirstOrDefaultAsync(cancellationToken);
         foreach (var x in users)
