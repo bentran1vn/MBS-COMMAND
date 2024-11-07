@@ -35,10 +35,10 @@ public class CreateScheduleCommandHandler(
             return Result.Failure(new Error("403", "Must own a group !"));
         }
 
-        // if (group.Members == null || !group.Members.Any() || group.Members.Count < 3)
-        // {
-        //     return Result.Failure(new Error("500", "Your group must have at least 3 members !"));
-        // }
+        if (group.Members == null || !group.Members.Any() || group.Members.Count < 3)
+        {
+            return Result.Failure(new Error("500", "Your group must have at least 3 members !"));
+        }
 
         var slot = await slotRepository.FindByIdAsync(request.SlotId, cancellationToken);
 
@@ -112,16 +112,18 @@ public class CreateScheduleCommandHandler(
         slot.IsBook = true;
         slot.ChangeSlotStatusInToBooked(slot.Id);
         scheduleRepository.Add(schedule);
-        
-        group.BookingPoints -= point.Value;
-        var memberPoint = point.Value / group.Members.Count;
+        if (isAccepted == 1)
+        {
+            group.BookingPoints -= point.Value;
+        }
+       
 
         var transactions = group.Members.Select(x => new Transaction()
         {
             UserId = x.StudentId,
             ScheduleId = schedule.Id,
             Date = schedule.Date,
-            Point = memberPoint,
+            Point = point.Value / group.Members.Count,
             Status = 0
         }).ToList();
         
