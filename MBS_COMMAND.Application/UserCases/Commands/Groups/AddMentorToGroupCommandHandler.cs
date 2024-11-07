@@ -1,3 +1,4 @@
+using MBS_COMMAND.Application.Abstractions;
 using MBS_COMMAND.Contract.Abstractions.Messages;
 using MBS_COMMAND.Contract.Abstractions.Shared;
 using MBS_COMMAND.Contract.Services.Groups;
@@ -6,11 +7,11 @@ using MBS_COMMAND.Domain.Abstractions.Repositories;
 using MBS_COMMAND.Domain.Entities;
 
 namespace MBS_COMMAND.Application.UserCases.Commands.Groups;
-
 public class AddMentorToGroupCommandHandler(
     IRepositoryBase<User, Guid> userRepository,
     IRepositoryBase<Group, Guid> groupRepository,
-    IUnitOfWork unitOfWork)
+    IUnitOfWork unitOfWork,
+    IMailService mailService)
     : ICommandHandler<Command.AddMentorToGroup>
 {
     public async Task<Result> Handle(Command.AddMentorToGroup request, CancellationToken cancellationToken)
@@ -20,10 +21,12 @@ public class AddMentorToGroupCommandHandler(
         {
             return Result.Failure(new Error("404", "User not found"));
         }
-        if(user.Role!=1)
+
+        if (user.Role != 1)
         {
             return Result.Failure(new Error("403", "User is not a mentor"));
         }
+
         var group = await groupRepository.FindByIdAsync(request.GroupId, cancellationToken);
         if (group == null)
         {
@@ -34,9 +37,15 @@ public class AddMentorToGroupCommandHandler(
         {
             return Result.Failure(new Error("400", "Group already has a mentor"));
         }
+
         group.MentorId = request.MentorId;
         groupRepository.Update(group);
         await unitOfWork.SaveChangesAsync(cancellationToken);
+        await mailService.SendMail(new MailContent
+        {
+            To = user.Email,
+            Subject = $"You have been added to group {group.Name} as a mentor",
+        });
         return Result.Success();
     }
 }
