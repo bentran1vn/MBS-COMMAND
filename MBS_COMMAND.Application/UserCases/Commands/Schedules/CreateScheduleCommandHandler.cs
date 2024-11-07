@@ -35,10 +35,10 @@ public class CreateScheduleCommandHandler(
             return Result.Failure(new Error("403", "Must own a group !"));
         }
 
-        if (group.Members == null || !group.Members.Any() || group.Members.Count < 3)
-        {
-            return Result.Failure(new Error("500", "Your group must have at least 3 members !"));
-        }
+        // if (group.Members == null || !group.Members.Any() || group.Members.Count < 3)
+        // {
+        //     return Result.Failure(new Error("500", "Your group must have at least 3 members !"));
+        // }
 
         var slot = await slotRepository.FindByIdAsync(request.SlotId, cancellationToken);
 
@@ -63,8 +63,18 @@ public class CreateScheduleCommandHandler(
         var start = TimeOnly.Parse(request.StartTime);
         var end = TimeOnly.Parse(request.EndTime);
         
+        
+        TimeZoneInfo vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+        var now = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, vietnamTimeZone);
+        var endTimeDatetime = slot.Date.ToDateTime(slot.EndTime);
+        
+        if (endTimeDatetime < now.DateTime)
+        {
+            return Result.Failure(new Error("500", "Can not book the old schedule !"));
+        }
+            
         if (start.CompareTo(slot.StartTime) < 0 ||
-            end.CompareTo(slot.EndTime) > 0)
+                end.CompareTo(slot.EndTime) > 0)
         {
             return Result.Failure(new Error("500", "Invalid booking time !"));
         }
