@@ -22,7 +22,7 @@ public class GeneratePointForAllGroup : ICommandHandler<Command.GeneratePointsFo
 
     public async Task<Result> Handle(Command.GeneratePointsForAllGroup request, CancellationToken cancellationToken)
     {
-        var groups = await _groupRepository.FindAll().ToListAsync(cancellationToken);
+        var groups = await _groupRepository.FindAll().AsTracking().ToListAsync(cancellationToken);
         foreach (var x in groups)
         {
             var totalPoints = x.Members.Sum(x => x.Student.Points);
