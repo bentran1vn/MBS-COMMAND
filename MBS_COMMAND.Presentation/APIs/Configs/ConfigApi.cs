@@ -11,11 +11,19 @@ public class ConfigApi : ApiEndpoint, ICarterModule
         var gr1 = app.NewVersionedApi("Configs")
             .MapGroup(_baseUrl).HasApiVersion(1);
         gr1.MapPost("generate-point", GeneratePoint);
+        gr1.MapPost("generate-point-for-group", GeneratePointForGroup);
     }
 
     private static async Task<IResult> GeneratePoint(ISender sender)
     {
         var result = await sender.Send(new Command.GeneratePoints());
+
+        return result.IsFailure ? HandlerFailure(result) : Results.Ok(result);
+    }
+
+    private static async Task<IResult> GeneratePointForGroup(ISender sender)
+    {
+        var result = await sender.Send(new Command.GeneratePointsForAllGroup());
 
         return result.IsFailure ? HandlerFailure(result) : Results.Ok(result);
     }
