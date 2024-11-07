@@ -69,7 +69,7 @@ public class CreateScheduleCommandHandler(
             return Result.Failure(new Error("500", "Invalid booking time !"));
         }
         
-        if ((end - start).TotalHours < 30)
+        if ((end - start).TotalMinutes < 30)
         {
             return Result.Failure(new Error("500", "Booking times must larger than 30 minutes !"));
         }
