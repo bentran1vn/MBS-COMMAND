@@ -44,17 +44,17 @@ public class CreateScheduleCommandHandler(
         {
             return Result.Failure(new Error("500", "Your group don't have a project. !"));
         }
-        if(group.MentorId==user.Id)
-        {
-            return Result.Failure(new Error("500", "Cannot book your group mentor's slot !"));
-        }
+        
         var slot = await slotRepository.FindByIdAsync(request.SlotId, cancellationToken);
 
         if (slot == null || group.IsDeleted)
         {
             return Result.Failure(new Error("404", "Slot is not exist !"));
         }
-
+        if(group.MentorId==slot.MentorId)
+        {
+            return Result.Failure(new Error("500", "Cannot book your group mentor's slot !"));
+        }
         if (slot.IsBook)
         {
             return Result.Failure(new Error("403", "Slot is booked !"));
