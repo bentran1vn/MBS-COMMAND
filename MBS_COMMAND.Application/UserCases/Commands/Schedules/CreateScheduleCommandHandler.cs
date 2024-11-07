@@ -51,10 +51,6 @@ public class CreateScheduleCommandHandler(
         {
             return Result.Failure(new Error("404", "Slot is not exist !"));
         }
-        if(group.MentorId==slot.MentorId)
-        {
-            return Result.Failure(new Error("500", "Cannot book your group mentor's slot !"));
-        }
         if (slot.IsBook)
         {
             return Result.Failure(new Error("403", "Slot is booked !"));
@@ -72,7 +68,7 @@ public class CreateScheduleCommandHandler(
         var end = TimeOnly.Parse(request.EndTime);
         
         
-        TimeZoneInfo vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+        var vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
         var now = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, vietnamTimeZone);
         var endTimeDatetime = slot.Date.ToDateTime(slot.EndTime);
         
