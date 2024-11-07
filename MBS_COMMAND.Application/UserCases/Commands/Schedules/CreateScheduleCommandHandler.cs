@@ -40,6 +40,14 @@ public class CreateScheduleCommandHandler(
             return Result.Failure(new Error("500", "Your group must have at least 3 members !"));
         }
 
+        if (group.Project is null)
+        {
+            return Result.Failure(new Error("500", "Your group don't have a project. !"));
+        }
+        if(group.MentorId==user.Id)
+        {
+            return Result.Failure(new Error("500", "Cannot book your group mentor's slot !"));
+        }
         var slot = await slotRepository.FindByIdAsync(request.SlotId, cancellationToken);
 
         if (slot == null || group.IsDeleted)
