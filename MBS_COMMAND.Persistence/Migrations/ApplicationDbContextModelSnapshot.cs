@@ -145,8 +145,8 @@ namespace MBS_COMMAND.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("BookingPoint")
-                        .HasColumnType("int");
+                    b.Property<double?>("BookingPoint")
+                        .HasColumnType("float");
 
                     b.Property<DateTimeOffset>("CreatedOnUtc")
                         .HasColumnType("datetimeoffset");
@@ -472,8 +472,8 @@ namespace MBS_COMMAND.Persistence.Migrations
                     b.Property<DateTimeOffset?>("ModifiedOnUtc")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<int>("Point")
-                        .HasColumnType("int");
+                    b.Property<double>("Point")
+                        .HasColumnType("float");
 
                     b.Property<Guid?>("ScheduleId")
                         .HasColumnType("uniqueidentifier");
@@ -525,8 +525,8 @@ namespace MBS_COMMAND.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Points")
-                        .HasColumnType("int");
+                    b.Property<double>("Points")
+                        .HasColumnType("float");
 
                     b.Property<int>("Role")
                         .HasColumnType("int");

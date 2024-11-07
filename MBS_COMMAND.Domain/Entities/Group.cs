@@ -13,7 +13,7 @@ public class Group : Entity<Guid>, IAuditableEntity
     public Guid? ProjectId { get;  set; }
     public virtual Project? Project { get; set; }
     
-    public int? BookingPoint { get; set; }
+    public double? BookingPoint { get; set; }
     public DateTimeOffset CreatedOnUtc { get; set; }
     public DateTimeOffset? ModifiedOnUtc { get; set; }
     public virtual ICollection<Group_Student_Mapping>? Members { get; set; } = [];
