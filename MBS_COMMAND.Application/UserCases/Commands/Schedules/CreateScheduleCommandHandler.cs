@@ -83,7 +83,7 @@ public class CreateScheduleCommandHandler(
 
         if (group.BookingPoint < point!.Value)
         {
-            return Result.Failure(new Error("500", "Invalid booking point !"));
+            return Result.Failure(new Error("500", "Not enough points to book"));
         }
         
         var schedule = new Schedule
