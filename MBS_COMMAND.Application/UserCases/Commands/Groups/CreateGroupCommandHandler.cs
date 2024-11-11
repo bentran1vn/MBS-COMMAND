@@ -5,7 +5,6 @@ using MBS_COMMAND.Domain.Abstractions.Repositories;
 using MBS_COMMAND.Domain.Entities;
 
 namespace MBS_COMMAND.Application.UserCases.Commands.Groups;
-
 public sealed class CreateGroupCommandHandler(
     IRepositoryBase<Group, Guid> repositoryBase,
     ICurrentUserService currentUserService) : ICommandHandler<Command.CreateGroupCommand>
@@ -19,7 +18,7 @@ public sealed class CreateGroupCommandHandler(
         {
             Name = request.Name,
             Stack = request.Stacks,
-             LeaderId = L
+            LeaderId = L
         };
         G.Members!.Add(new Group_Student_Mapping { StudentId = L, GroupId = G.Id });
         repositoryBase.Add(G);

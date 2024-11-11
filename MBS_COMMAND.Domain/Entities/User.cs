@@ -10,7 +10,7 @@ public class User : AggregateRoot<Guid>, IAuditableEntity
     public string? FullName { get; set; }
     public string Password { get; set; }
     public int Role { get; set; }
-    public int Points { get; set; }
+    public double Points { get; set; }
     public int Status { get; set; } //0 Not Active, 1 Active, 2 Blocked
     public Guid? MentorId { get; set; }
     public bool IsFirstLogin { get; set; } = true;

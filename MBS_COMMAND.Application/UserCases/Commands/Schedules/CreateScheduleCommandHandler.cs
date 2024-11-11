@@ -35,18 +35,22 @@ public class CreateScheduleCommandHandler(
             return Result.Failure(new Error("403", "Must own a group !"));
         }
 
-        // if (group.Members == null || !group.Members.Any() || group.Members.Count < 3)
-        // {
-        //     return Result.Failure(new Error("500", "Your group must have at least 3 members !"));
-        // }
+        if (group.Members == null || !group.Members.Any() || group.Members.Count < 3)
+        {
+            return Result.Failure(new Error("500", "Your group must have at least 3 members !"));
+        }
 
+        if (group.Project is null)
+        {
+            return Result.Failure(new Error("500", "Your group don't have a project. !"));
+        }
+        
         var slot = await slotRepository.FindByIdAsync(request.SlotId, cancellationToken);
 
         if (slot == null || group.IsDeleted)
         {
             return Result.Failure(new Error("404", "Slot is not exist !"));
         }
-
         if (slot.IsBook)
         {
             return Result.Failure(new Error("403", "Slot is booked !"));
@@ -64,7 +68,7 @@ public class CreateScheduleCommandHandler(
         var end = TimeOnly.Parse(request.EndTime);
         
         
-        TimeZoneInfo vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+        var vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
         var now = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, vietnamTimeZone);
         var endTimeDatetime = slot.Date.ToDateTime(slot.EndTime);
         
@@ -91,7 +95,7 @@ public class CreateScheduleCommandHandler(
             return Result.Failure(new Error("500", "Booking points is not exist !"));
         }
 
-        if (group.BookingPoint < point!.Value)
+        if (group.BookingPoints < point!.Value)
         {
             return Result.Failure(new Error("500", "Not enough points to book"));
         }
@@ -112,16 +116,18 @@ public class CreateScheduleCommandHandler(
         slot.IsBook = true;
         slot.ChangeSlotStatusInToBooked(slot.Id);
         scheduleRepository.Add(schedule);
-        
-        group.BookingPoint -= point.Value;
-        var memberPoint = point.Value / group.Members.Count;
+        if (isAccepted == 1)
+        {
+            group.BookingPoints -= point.Value;
+        }
+       
 
         var transactions = group.Members.Select(x => new Transaction()
         {
             UserId = x.StudentId,
             ScheduleId = schedule.Id,
             Date = schedule.Date,
-            Point = memberPoint,
+            Point = point.Value / group.Members.Count,
             Status = 0
         }).ToList();
         

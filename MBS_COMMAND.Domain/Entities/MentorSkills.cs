@@ -34,11 +34,5 @@ public class MentorSkills : AggregateRoot<Guid>, IAuditableEntity
         RaiseDomainEvent(new MBS_CONTRACT.SHARE.Services.MentorSkills.DomainEvent.MentorSkillsCreated(Guid.NewGuid(), Id, mentorId, domainSkill, domainCertificates));
     }
 
-    public void CreateMentor(User user)
-    {
-        RaiseDomainEvent(new DomainEventShared.MentorCreated(
-                Guid.NewGuid(), user.Id, user.Email,
-                user.FullName ?? "", user.Role, user.Points,
-                user.Status, user.CreatedOnUtc, user.IsDeleted));
-    }
+   
 }

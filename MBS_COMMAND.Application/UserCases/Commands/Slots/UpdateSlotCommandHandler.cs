@@ -8,7 +8,7 @@ using MBS_COMMAND.Domain.Entities;
 namespace MBS_COMMAND.Application.UserCases.Commands.Slots;
 public class UpdateSlotCommandHandler(
     IUnitOfWork unitOfWork,
-    IRepositoryBase<Slot, Guid> slotRepository)
+    IRepositoryBase<Slot, Guid> slotRepository,IRepositoryBase<Semester, Guid> semesterRepository)
     : ICommandHandler<Command.UpdateSlot>
 {
     public async Task<Result> Handle(Command.UpdateSlot request, CancellationToken cancellationToken)
@@ -18,7 +18,15 @@ public class UpdateSlotCommandHandler(
         {
             return Result.Failure(new Error("404", "Slot not found"));
         }
-
+        var currentSemester = await semesterRepository.FindSingleAsync(x => x.IsActive, cancellationToken);
+        if (currentSemester == null)
+            return Result.Failure(new Error("404", "Active semester not found"));
+        var semesterEndDate = currentSemester.From.AddDays(6);
+        var date = DateOnly.Parse(request.SlotModel.Date);
+        if(date < currentSemester.From || date > semesterEndDate)
+        {
+            return Result.Failure(new Error("404", "Invalid Date"));
+        }
         slot.StartTime = TimeOnly.Parse(request.SlotModel.StartTime);
         slot.EndTime = TimeOnly.Parse(request.SlotModel.EndTime);
         slot.Date = DateOnly.Parse(request.SlotModel.Date);
