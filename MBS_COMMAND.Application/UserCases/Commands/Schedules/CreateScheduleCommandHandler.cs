@@ -56,13 +56,6 @@ public class CreateScheduleCommandHandler(
             return Result.Failure(new Error("403", "Slot is booked !"));
         }
 
-        var subject = await subjectRepository.FindByIdAsync(request.SubjectId, cancellationToken);
-
-        if (subject == null || subject.IsDeleted)
-        {
-            return Result.Failure(new Error("404", "Subject is not exist !"));
-        }
-
         var isAccepted = group.MentorId == slot.MentorId? 1 : 0;
         var start = TimeOnly.Parse(request.StartTime);
         var end = TimeOnly.Parse(request.EndTime);
@@ -99,7 +92,7 @@ public class CreateScheduleCommandHandler(
         {
             return Result.Failure(new Error("500", "Not enough points to book"));
         }
-        var s= await subjectRepository.FindByIdAsync(request.SubjectId, cancellationToken);
+
         var schedule = new Schedule
         {
             Id = Guid.NewGuid(),
