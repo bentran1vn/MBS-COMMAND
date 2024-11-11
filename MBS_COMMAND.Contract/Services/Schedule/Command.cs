@@ -13,7 +13,6 @@ public static class Command
         public Guid UserId { get; set; }
         
         public Guid SlotId { get; set; }
-        public Guid SubjectId { get; set; }
         public Guid GroupId { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }

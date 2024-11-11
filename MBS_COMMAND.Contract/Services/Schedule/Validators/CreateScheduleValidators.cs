@@ -19,7 +19,6 @@ public class CreateScheduleValidators : AbstractValidator<Command.CreateSchedule
             .WithMessage("EndTime must be greater than StartTime.");
 
         RuleFor(x => x.SlotId).NotEmpty();
-        RuleFor(x => x.SubjectId).NotEmpty();
     }
 
     // Helper method to check if the string is a valid TimeOnly format
