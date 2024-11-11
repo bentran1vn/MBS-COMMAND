@@ -38,14 +38,37 @@ public class AddMentorToGroupCommandHandler(
             return Result.Failure(new Error("400", "Group already has a mentor"));
         }
 
-        group.MentorId = request.MentorId;
+        /*group.MentorId = request.MentorId;
         groupRepository.Update(group);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         await mailService.SendMail(new MailContent
         {
             To = user.Email,
             Subject = $"You have been added to group {group.Name} as a mentor",
+        });*/
+        await mailService.SendMail(new MailContent
+        {
+            To = user.Email,
+            Subject = $"You have been invited to group {group.Name} as a mentor",
+            Body = $@"
+        <p>Dear {user.FullName},</p>
+        <p>You have been invited to join the group <strong>{group.Name}</strong> as a mentor.</p>
+        <p>Please choose an option below:</p>
+        <div>
+            <a href=""https://your-api-url.com/api/invite/response?mentorId={user.Id}&groupId={group.Id}&isAccepted=true""
+               style=""padding:10px 20px; color:#fff; background-color:green; text-decoration:none; border-radius:5px;"">
+               Accept
+            </a>
+            <a href=""https://your-api-url.com/api/invite/response?mentorId={user.Id}&groupId={group.Id}&isAccepted=false""
+               style=""padding:10px 20px; color:#fff; background-color:red; text-decoration:none; border-radius:5px; margin-left:10px;"">
+               Decline
+            </a>
+        </div>
+        <p>Thank you!</p>
+    ",
+           
         });
+
         return Result.Success();
     }
 }

@@ -99,7 +99,7 @@ public class CreateScheduleCommandHandler(
         {
             return Result.Failure(new Error("500", "Not enough points to book"));
         }
-        
+        var s= await subjectRepository.FindByIdAsync(request.SubjectId, cancellationToken);
         var schedule = new Schedule
         {
             Id = Guid.NewGuid(),
@@ -107,7 +107,6 @@ public class CreateScheduleCommandHandler(
             EndTime = end,
             Date = slot.Date,
             MentorId = slot.MentorId ?? new Guid(),
-            SubjectId = request.SubjectId,
             GroupId = group.Id,
             SlotId = slot.Id,
             IsAccepted = isAccepted,

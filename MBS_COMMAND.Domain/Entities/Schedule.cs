@@ -13,10 +13,8 @@ public class Schedule : Entity<Guid>, IAuditableEntity
     public TimeOnly StartTime { get; set; }
     public TimeOnly EndTime { get; set; }
     public DateOnly Date { get; set; }
-    public Guid SubjectId { get; set; }
     public int IsAccepted { get; set; } // 0: Pending, 1: Accepted, 2: Rejected
-
-    public virtual Subject? Subject { get; set; }
+    
     public DateTimeOffset CreatedOnUtc { get; set; }
     public DateTimeOffset? ModifiedOnUtc { get; set; }
 }

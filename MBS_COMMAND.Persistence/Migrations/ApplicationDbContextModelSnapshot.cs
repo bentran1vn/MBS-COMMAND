@@ -299,9 +299,6 @@ namespace MBS_COMMAND.Persistence.Migrations
                     b.Property<TimeOnly>("StartTime")
                         .HasColumnType("time");
 
-                    b.Property<Guid>("SubjectId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("GroupId");
@@ -309,8 +306,6 @@ namespace MBS_COMMAND.Persistence.Migrations
                     b.HasIndex("MentorId");
 
                     b.HasIndex("SlotId");
-
-                    b.HasIndex("SubjectId");
 
                     b.ToTable("Schedules");
                 });
@@ -679,19 +674,11 @@ namespace MBS_COMMAND.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MBS_COMMAND.Domain.Entities.Subject", "Subject")
-                        .WithMany()
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Group");
 
                     b.Navigation("Mentor");
 
                     b.Navigation("Slot");
-
-                    b.Navigation("Subject");
                 });
 
             modelBuilder.Entity("MBS_COMMAND.Domain.Entities.Skill", b =>
