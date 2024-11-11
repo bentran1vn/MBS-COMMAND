@@ -62,6 +62,8 @@ public class CreateMentorSkillsCommandHandler : ICommandHandler<Command.CreateMe
                 Description = "123123",
                 ImageUrl = x
             }).ToList();
+            _cetificateRepository.AddRange(certificates);
+            mentorSkill.CreateMentorSkills(mentor.Id, skill, certificates);
         }
         else
         {
@@ -73,11 +75,9 @@ public class CreateMentorSkillsCommandHandler : ICommandHandler<Command.CreateMe
                 Description = "123123",
                 ImageUrl = x
             }).ToList();
+            _cetificateRepository.AddRange(certificates);
+            mentorSkills.CreateMentorSkills(mentor.Id, skill, certificates);
         }
-        
-        _cetificateRepository.AddRange(certificates);
-        
-        mentorSkill.CreateMentorSkills(mentor.Id, skill, certificates);
         
         // await _mailService.SendMail(new MailContent()
         // {
