@@ -6,6 +6,7 @@ using MBS_COMMAND.Domain.Abstractions;
 using MBS_COMMAND.Domain.Abstractions.Repositories;
 using MBS_COMMAND.Domain.Entities;
 using MBS_COMMAND.Persistence;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace MBS_COMMAND.Application.UserCases.Commands.Groups;
@@ -49,7 +50,14 @@ public class AddMentorToGroupCommandHandler(
             To = user.Email,
             Subject = $"You have been added to group {group.Name} as a mentor",
         });*/
+        var isInvited = await context.Configs.FirstOrDefaultAsync(x => x.Key.Equals($"{group.Name}MentorInvite"),
+            cancellationToken);
+        if (isInvited != null)
+        {
+            return Result.Failure(new Error("400", "Mentor already invited"));
+        }
         var domain = configuration["Domain"];
+        
         await mailService.SendMail(new MailContent
         {
             To = user.Email,
@@ -59,19 +67,19 @@ public class AddMentorToGroupCommandHandler(
         <p>You have been invited to join the group <strong>{group.Name}</strong> as a mentor.</p>
         <p>Please choose an option below:</p>
         <div>
-            <a href='{domain}/api/v1/user/mentor-accept-or-decline-from-group?mentorId={user.Id}&groupId={group.Id}&isAccepted=true'
+            <a href='{domain}/api/v1/user/mentor-accept-or-decline-from-group?mentorId={Uri.EscapeDataString(user.Id.ToString())}&groupId={Uri.EscapeDataString(group.Id.ToString())}&isAccepted=true'
                style='padding:10px 20px; color:#fff; background-color:green; text-decoration:none; border-radius:5px;'>
                Accept
             </a>
-            <a href='{domain}/api/invite/response?mentor-accept-or-decline-from-group={user.Id}&groupId={group.Id}&isAccepted=false'
+            <a href='{domain}/api/v1/user/mentor-accept-or-decline-from-group?mentorId={Uri.EscapeDataString(user.Id.ToString())}&groupId={Uri.EscapeDataString(group.Id.ToString())}&isAccepted=false'
                style='padding:10px 20px; color:#fff; background-color:red; text-decoration:none; border-radius:5px; margin-left:10px;'>
                Decline
             </a>
         </div>
         <p>Thank you!</p>
-    ",
-           
+    "
         });
+
         var config = new Config
         {
             Key = $"{group.Name}MentorInvite",

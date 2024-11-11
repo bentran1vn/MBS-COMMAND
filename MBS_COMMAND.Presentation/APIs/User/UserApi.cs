@@ -19,7 +19,7 @@ public class UserApi : ApiEndpoint, ICarterModule
             .MapGroup(BaseUrl).HasApiVersion(1);
 
         gr1.MapPost("create-mentor", CreateUser);
-        gr1.MapPost("mentor-accept-or-decline-from-group", MentorAcceptOrDeclineFromGroup);
+        gr1.MapGet("mentor-accept-or-decline-from-group/groupId/mentorId/isAccepted", MentorAcceptOrDeclineFromGroup);
 
     }
 
@@ -29,9 +29,9 @@ public class UserApi : ApiEndpoint, ICarterModule
 
         return result.IsFailure ? HandlerFailure(result) : Results.Ok(result);
     }
-    private static async Task<IResult> MentorAcceptOrDeclineFromGroup(ISender sender,Guid MentorId,Guid GroupId,bool IsAccepted)
+    private static async Task<IResult> MentorAcceptOrDeclineFromGroup(ISender sender,Guid mentorId,Guid groupId,bool isAccepted)
     {
-        var result = await sender.Send(new Command.MentorAcceptOrDeclineFromGroupCommand(MentorId, IsAccepted, GroupId));
+        var result = await sender.Send(new Command.MentorAcceptOrDeclineFromGroupCommand(mentorId, isAccepted, groupId));
         return result.IsFailure ? HandlerFailure(result) : Results.Ok(result);
     }
    
