@@ -26,8 +26,9 @@ public class GeneratePointsCommandHandler : ICommandHandler<Command.GeneratePoin
     {
         var users = await _userRepository.FindAll(x => x.Role == 0 && x.Status == 1).AsTracking()
             .ToListAsync(cancellationToken);
-        var point = await _context.Configs.Where(x => x.Key.Equals("PointPerStudent")).Select(x => x.Value)
+        var pointString = await _context.Configs.Where(x => x.Key.Equals("PointPerStudent")).Select(x => x.Value)
             .FirstOrDefaultAsync(cancellationToken);
+        var point = double.Parse(pointString!);
         foreach (var x in users)
         {
             x.Points = point;

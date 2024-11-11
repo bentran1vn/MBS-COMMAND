@@ -11,7 +11,7 @@ public class Feedback : Entity<Guid>, IAuditableEntity
     public int Rating { get; set; }
     public Guid? ScheduleId { get; set; }
     public virtual Schedule? Schedule { get; set; }
-    
+    public bool? IsPresent { get; set; }
     public bool IsMentor { get; set; }
     public DateTimeOffset CreatedOnUtc { get; set; }
     public DateTimeOffset? ModifiedOnUtc { get; set; }

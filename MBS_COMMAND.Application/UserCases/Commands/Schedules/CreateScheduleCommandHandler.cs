@@ -95,7 +95,7 @@ public class CreateScheduleCommandHandler(
             return Result.Failure(new Error("500", "Booking points is not exist !"));
         }
 
-        if (group.BookingPoints < point!.Value)
+        if (group.BookingPoints < double.Parse(point!.Value))
         {
             return Result.Failure(new Error("500", "Not enough points to book"));
         }
@@ -118,7 +118,7 @@ public class CreateScheduleCommandHandler(
         scheduleRepository.Add(schedule);
         if (isAccepted == 1)
         {
-            group.BookingPoints -= point.Value;
+            group.BookingPoints -= double.Parse(point!.Value);
         }
        
 
@@ -127,7 +127,7 @@ public class CreateScheduleCommandHandler(
             UserId = x.StudentId,
             ScheduleId = schedule.Id,
             Date = schedule.Date,
-            Point = point.Value / group.Members.Count,
+            Point = double.Parse(point!.Value) / group.Members.Count,
             Status = 0
         }).ToList();
         

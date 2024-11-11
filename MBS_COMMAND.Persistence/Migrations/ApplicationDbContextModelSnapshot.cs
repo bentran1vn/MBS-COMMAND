@@ -91,8 +91,10 @@ namespace MBS_COMMAND.Persistence.Migrations
                     b.Property<string>("Key")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Value")
-                        .HasColumnType("int");
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasMaxLength(2147483647)
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Key");
 
@@ -116,6 +118,9 @@ namespace MBS_COMMAND.Persistence.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsMentor")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("IsPresent")
                         .HasColumnType("bit");
 
                     b.Property<DateTimeOffset?>("ModifiedOnUtc")
