@@ -4,6 +4,7 @@ using MBS_COMMAND.Domain.Abstractions;
 using MBS_COMMAND.Domain.Abstractions.Repositories;
 using MBS_COMMAND.Domain.Entities;
 using MBS_CONTRACT.SHARE.Services.Groups;
+using Microsoft.Extensions.Configuration;
 using Command = MBS_COMMAND.Contract.Services.Groups.Command;
 
 namespace MBS_COMMAND.Application.UserCases.Commands.Groups;
@@ -11,6 +12,7 @@ namespace MBS_COMMAND.Application.UserCases.Commands.Groups;
 public class AcceptGroupInvitationCommandHandler(
     IRepositoryBase<User, Guid> userRepository,
     IRepositoryBase<Group, Guid> groupRepository,
+    IConfiguration configuration,
     IUnitOfWork unitOfWork)
     : ICommandHandler<Command.AcceptGroupInvitation>
 {

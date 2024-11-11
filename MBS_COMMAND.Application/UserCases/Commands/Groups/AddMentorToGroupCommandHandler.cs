@@ -5,13 +5,16 @@ using MBS_COMMAND.Contract.Services.Groups;
 using MBS_COMMAND.Domain.Abstractions;
 using MBS_COMMAND.Domain.Abstractions.Repositories;
 using MBS_COMMAND.Domain.Entities;
+using MBS_COMMAND.Persistence;
+using Microsoft.Extensions.Configuration;
 
 namespace MBS_COMMAND.Application.UserCases.Commands.Groups;
 public class AddMentorToGroupCommandHandler(
     IRepositoryBase<User, Guid> userRepository,
     IRepositoryBase<Group, Guid> groupRepository,
     IUnitOfWork unitOfWork,
-    IMailService mailService)
+    ApplicationDbContext context,
+    IConfiguration configuration,    IMailService mailService)
     : ICommandHandler<Command.AddMentorToGroup>
 {
     public async Task<Result> Handle(Command.AddMentorToGroup request, CancellationToken cancellationToken)
@@ -46,6 +49,7 @@ public class AddMentorToGroupCommandHandler(
             To = user.Email,
             Subject = $"You have been added to group {group.Name} as a mentor",
         });*/
+        var domain = configuration["Domain"];
         await mailService.SendMail(new MailContent
         {
             To = user.Email,
@@ -55,12 +59,12 @@ public class AddMentorToGroupCommandHandler(
         <p>You have been invited to join the group <strong>{group.Name}</strong> as a mentor.</p>
         <p>Please choose an option below:</p>
         <div>
-            <a href=""https://your-api-url.com/api/invite/response?mentorId={user.Id}&groupId={group.Id}&isAccepted=true""
-               style=""padding:10px 20px; color:#fff; background-color:green; text-decoration:none; border-radius:5px;"">
+            <a href='{domain}/api/v1/user/mentor-accept-or-decline-from-group?mentorId={user.Id}&groupId={group.Id}&isAccepted=true'
+               style='padding:10px 20px; color:#fff; background-color:green; text-decoration:none; border-radius:5px;'>
                Accept
             </a>
-            <a href=""https://your-api-url.com/api/invite/response?mentorId={user.Id}&groupId={group.Id}&isAccepted=false""
-               style=""padding:10px 20px; color:#fff; background-color:red; text-decoration:none; border-radius:5px; margin-left:10px;"">
+            <a href='{domain}/api/invite/response?mentor-accept-or-decline-from-group={user.Id}&groupId={group.Id}&isAccepted=false'
+               style='padding:10px 20px; color:#fff; background-color:red; text-decoration:none; border-radius:5px; margin-left:10px;'>
                Decline
             </a>
         </div>
@@ -68,7 +72,13 @@ public class AddMentorToGroupCommandHandler(
     ",
            
         });
-
+        var config = new Config
+        {
+            Key = $"{group.Name}MentorInvite",
+            Value = "Pending"
+        };
+        context.Configs.Add(config);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success();
     }
 }
