@@ -37,6 +37,8 @@ public class CreateMentorSkillsCommandHandler : ICommandHandler<Command.CreateMe
 
         if (mentor is null) return Result.Failure(new Error("404", $"Not Mentor with Id: {request.MentorId}"));
         
+        var mentorSkills = await _mentorSkillsRepository.FindSingleAsync(x => x.SkillId.Equals(request.SkillId) && x.UserId.Equals(request.MentorId), cancellationToken);
+        
         var mentorSkill = new Domain.Entities.MentorSkills()
         {
             Id = Guid.NewGuid(),
@@ -44,19 +46,34 @@ public class CreateMentorSkillsCommandHandler : ICommandHandler<Command.CreateMe
             UserId = request.MentorId,
         };
         
-        _mentorSkillsRepository.Add(mentorSkill);
-        
         var tasks = request.ProductImages.Select(x => _mediaService.UploadImageAsync(x));
         var result = await Task.WhenAll(tasks);
+
+        List<Certificate> certificates;
         
-        var certificates = result.Select(x => new Certificate()
+        if (mentorSkills is null)
         {
-            Id = Guid.NewGuid(),
-            MentorSkillsId = mentorSkill.Id,
-            Name = "12312",
-            Description = "123123",
-            ImageUrl = x
-        }).ToList();
+            _mentorSkillsRepository.Add(mentorSkill);
+            certificates = result.Select(x => new Certificate()
+            {
+                Id = Guid.NewGuid(),
+                MentorSkillsId = mentorSkill.Id,
+                Name = "12312",
+                Description = "123123",
+                ImageUrl = x
+            }).ToList();
+        }
+        else
+        {
+            certificates = result.Select(x => new Certificate()
+            {
+                Id = Guid.NewGuid(),
+                MentorSkillsId = mentorSkills.Id,
+                Name = "12312",
+                Description = "123123",
+                ImageUrl = x
+            }).ToList();
+        }
         
         _cetificateRepository.AddRange(certificates);
         
