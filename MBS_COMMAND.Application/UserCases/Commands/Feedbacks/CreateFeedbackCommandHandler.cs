@@ -17,12 +17,14 @@ public class CreateFeedbackCommandHandler(
     public async Task<Result> Handle(Command.CreateFeedback request, CancellationToken cancellationToken)
     {
         var role = currentUserService.Role == "1";
+        
         var feedback = new Feedback
         {
             Content = request.Content,
             Rating = request.Rating,
             ScheduleId = request.ScheduleId,
             IsMentor = role,
+            IsPresent = request.IsPresent,
         };
         feedbackRepository.Add(feedback);
         await unitOfWork.SaveChangesAsync(cancellationToken);
