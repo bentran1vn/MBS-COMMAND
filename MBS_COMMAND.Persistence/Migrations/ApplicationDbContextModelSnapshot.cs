@@ -112,9 +112,6 @@ namespace MBS_COMMAND.Persistence.Migrations
                     b.Property<DateTimeOffset>("CreatedOnUtc")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<Guid?>("GroupId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -131,8 +128,6 @@ namespace MBS_COMMAND.Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
 
                     b.HasIndex("ScheduleId");
 
@@ -174,6 +169,9 @@ namespace MBS_COMMAND.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("SubjectId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("LeaderId");
@@ -181,6 +179,8 @@ namespace MBS_COMMAND.Persistence.Migrations
                     b.HasIndex("MentorId");
 
                     b.HasIndex("ProjectId");
+
+                    b.HasIndex("SubjectId");
 
                     b.ToTable("Groups");
                 });
@@ -582,15 +582,9 @@ namespace MBS_COMMAND.Persistence.Migrations
 
             modelBuilder.Entity("MBS_COMMAND.Domain.Entities.Feedback", b =>
                 {
-                    b.HasOne("MBS_COMMAND.Domain.Entities.Group", "Group")
-                        .WithMany()
-                        .HasForeignKey("GroupId");
-
                     b.HasOne("MBS_COMMAND.Domain.Entities.Schedule", "Schedule")
                         .WithMany()
                         .HasForeignKey("ScheduleId");
-
-                    b.Navigation("Group");
 
                     b.Navigation("Schedule");
                 });
@@ -609,11 +603,17 @@ namespace MBS_COMMAND.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("ProjectId");
 
+                    b.HasOne("MBS_COMMAND.Domain.Entities.Subject", "Subject")
+                        .WithMany()
+                        .HasForeignKey("SubjectId");
+
                     b.Navigation("Leader");
 
                     b.Navigation("Mentor");
 
                     b.Navigation("Project");
+
+                    b.Navigation("Subject");
                 });
 
             modelBuilder.Entity("MBS_COMMAND.Domain.Entities.Group_Student_Mapping", b =>

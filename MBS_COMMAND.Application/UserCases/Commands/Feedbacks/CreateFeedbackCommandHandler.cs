@@ -9,6 +9,7 @@ namespace MBS_COMMAND.Application.UserCases.Commands.Feedbacks;
 
 public class CreateFeedbackCommandHandler(
     IRepositoryBase<Feedback, Guid> feedbackRepository,
+    
     ICurrentUserService currentUserService,
     IUnitOfWork unitOfWork)
     : ICommandHandler<Command.CreateFeedback>
@@ -19,7 +20,6 @@ public class CreateFeedbackCommandHandler(
         var feedback = new Feedback
         {
             Content = request.Content,
-            GroupId = request.GroupId,
             Rating = request.Rating,
             ScheduleId = request.ScheduleId,
             IsMentor = role,
