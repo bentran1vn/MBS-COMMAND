@@ -14,7 +14,7 @@ public class GroupApi : ApiEndpoint, ICarterModule
         gr1.MapDelete("member", RemoveMemberFromGroup);
         gr1.MapPut("member", ChangeLeader).WithSummary("must login in order to use this api");
         gr1.MapPut(string.Empty, UpdateGroup);
-        //gr1.MapGet("accept-invitation/{groupId}/{memberId}", AcceptGroupInvitation);
+        gr1.MapGet("accept-invitation/{groupId}/{memberId}", AcceptGroupInvitation);
         gr1.MapPost("mentor", AddMentorToGroup);
     }
     private static async Task<IResult> AddMentorToGroup(ISender sender, [FromBody] Command.AddMentorToGroup request)
