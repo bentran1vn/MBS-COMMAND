@@ -15,7 +15,8 @@ public class AddMentorToGroupCommandHandler(
     IRepositoryBase<Group, Guid> groupRepository,
     IUnitOfWork unitOfWork,
     ApplicationDbContext context,
-    IConfiguration configuration,    IMailService mailService)
+    IConfiguration configuration,
+    IMailService mailService)
     : ICommandHandler<Command.AddMentorToGroup>
 {
     public async Task<Result> Handle(Command.AddMentorToGroup request, CancellationToken cancellationToken)
@@ -56,8 +57,9 @@ public class AddMentorToGroupCommandHandler(
         {
             return Result.Failure(new Error("400", "Mentor already invited"));
         }
+
         var domain = configuration["Domain"];
-        
+
         await mailService.SendMail(new MailContent
         {
             To = user.Email,
@@ -66,17 +68,19 @@ public class AddMentorToGroupCommandHandler(
         <p>Dear {user.FullName},</p>
         <p>You have been invited to join the group <strong>{group.Name}</strong> as a mentor.</p>
         <p>Please choose an option below:</p>
-        <div>
-            <a href='{domain}/api/v1/user/mentor-accept-or-decline-from-group?mentorId={Uri.EscapeDataString(user.Id.ToString())}&groupId={Uri.EscapeDataString(group.Id.ToString())}&isAccepted=true'
-               style='padding:10px 20px; color:#fff; background-color:green; text-decoration:none; border-radius:5px;'>
-               Accept
-            </a>
-            <a href='{domain}/api/v1/user/mentor-accept-or-decline-from-group?mentorId={Uri.EscapeDataString(user.Id.ToString())}&groupId={Uri.EscapeDataString(group.Id.ToString())}&isAccepted=false'
-               style='padding:10px 20px; color:#fff; background-color:red; text-decoration:none; border-radius:5px; margin-left:10px;'>
-               Decline
-            </a>
-        </div>
-        <p>Thank you!</p>
+
+<a href='{{domain}}/api/v1/user/mentor-accept-or-decline-from-group/{{Uri.EscapeDataString(group.Id.ToString())}}/{{Uri.EscapeDataString(user.Id.ToString())}}/isAccepted?isAccepted=true'
+   style='padding:10px 20px; color:#fff; background-color:green; text-decoration:none; border-radius:5px;'>
+   Accept
+</a>
+
+<a href='{{domain}}/api/v1/user/mentor-accept-or-decline-from-group/{{Uri.EscapeDataString(group.Id.ToString())}}/{{Uri.EscapeDataString(user.Id.ToString())}}/isAccepted?isAccepted=false'
+   style='padding:10px 20px; color:#fff; background-color:red; text-decoration:none; border-radius:5px; margin-left:10px;'>
+   Decline
+</a>
+
+<p>Thank you!</p>
+
     "
         });
 
