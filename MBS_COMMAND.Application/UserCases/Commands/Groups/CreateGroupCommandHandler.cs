@@ -18,7 +18,8 @@ public sealed class CreateGroupCommandHandler(
         {
             Name = request.Name,
             Stack = request.Stacks,
-            LeaderId = L
+            LeaderId = L,
+            SubjectId = request.SubjectId
         };
         G.Members!.Add(new Group_Student_Mapping { StudentId = L, GroupId = G.Id });
         repositoryBase.Add(G);
