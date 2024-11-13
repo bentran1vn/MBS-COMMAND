@@ -11,7 +11,14 @@ A platform designed to connect students with mentors, facilitating skill develop
 
 - **Admins**: Administrators oversee the system, configuring points awarded to students, managing and approving mentors, and monitoring the feedback from student-mentor interactions. This role ensures the quality and effectiveness of mentorship sessions and maintains the overall integrity of the system.
 
-## 1. Tech Stack
+## 1. System Standout Features
+
+- **CQRS Pattern**: Separates read and write operations, with **MongoDB** dedicated to reads and **MSSQL Server** to writes.
+- **Repository Pattern**: Provides abstraction for reusable and testable data access.
+- **Outbox Pattern**: Ensures reliable event handling by persisting events before processing.
+- **Idempotent Pattern**: Manages duplicate events to prevent redundant actions, ensuring message consistency.
+
+## 2. Tech Stack
 
 ### Backend: 
 - ASP.NET Core 8, EF Core, MediatR, RabbitMQ, MassTransit.
@@ -39,12 +46,7 @@ A platform designed to connect students with mentors, facilitating skill develop
 
 - **Clean Architecture**: Modular and maintainable, facilitating easy scalability and testing.
 
-## 2. System Standout Features
 
-- **CQRS Pattern**: Separates read and write operations, with **MongoDB** dedicated to reads and **MSSQL Server** to writes.
-- **Repository Pattern**: Provides abstraction for reusable and testable data access.
-- **Outbox Pattern**: Ensures reliable event handling by persisting events before processing.
-- **Idempotent Pattern**: Manages duplicate events to prevent redundant actions, ensuring message consistency.
 
 ---
 
