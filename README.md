@@ -54,7 +54,7 @@ This system architecture and tech stack ensure that the Mentor Booking System (M
 ![System Architeture](https://res.cloudinary.com/dejf8mmou/image/upload/v1731513593/ez06id7m9eydrqmqxze2.jpg)
 
 ## 4. ERD Diagram
-![ERD Diagram]([https://res.cloudinary.com/dejf8mmou/image/upload/v1731513592/eblg8mnf5enfoxdtzqsw.jpg)
+![ERD Diagram](https://res.cloudinary.com/dejf8mmou/image/upload/v1731513592/eblg8mnf5enfoxdtzqsw.jpg)
 
 ## 5. Project Repository
 
