@@ -51,7 +51,7 @@ A platform designed to connect students with mentors, facilitating skill develop
 This system architecture and tech stack ensure that the Mentor Booking System (MBS) is scalable, efficient, and maintains a high-quality user experience across all roles.
 
 ## 3. System Architeture
-![System Architeture](https://res.cloudinary.com/dejf8mmou/image/upload/v1731513593/ez06id7m9eydrqmqxze2.jpg)
+![System Architeture](https://res.cloudinary.com/dejf8mmou/image/upload/v1731514790/haxgn9u7yggjqyajrmvd.jpg)
 
 ## 4. ERD Diagram
 ![ERD Diagram](https://res.cloudinary.com/dejf8mmou/image/upload/v1731513592/eblg8mnf5enfoxdtzqsw.jpg)
