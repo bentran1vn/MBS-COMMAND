@@ -46,8 +46,26 @@ A platform designed to connect students with mentors, facilitating skill develop
 
 - **Clean Architecture**: Modular and maintainable, facilitating easy scalability and testing.
 
-
-
 ---
 
 This system architecture and tech stack ensure that the Mentor Booking System (MBS) is scalable, efficient, and maintains a high-quality user experience across all roles.
+
+## 3. System Architeture
+![ERD Diagram](https://res.cloudinary.com/dejf8mmou/image/upload/v1731513593/ez06id7m9eydrqmqxze2.jpg)
+
+## 4. ERD Diagram
+![ERD Diagram](https://res.cloudinary.com/dejf8mmou/image/upload/v1731513593/ez06id7m9eydrqmqxze2.jpg)
+
+## 5. Project Repository
+
+- **Admin Web Repository**: [MBS-WEB_APP](https://github.com/bentran1vn/MBS-WEB_APP)
+- **Mobile Repository**: [MBS-MOBILE_APP](https://github.com/bentran1vn/MBS-MOBILE_APP)
+- **Command Repository**: [MBS-COMMAND](https://github.com/bentran1vn/MBS-COMMAND)
+- **Query Repository**: [MBS-QUERY](https://github.com/bentran1vn/MBS-QUERY)
+- **Authorization Repository**: [MBS-AUTHORIZATION](https://github.com/bentran1vn/MBS-AUTHORIZATION)
+- **Reverse Proxy Repository**: [MBS-REVERSE_PROXY](https://github.com/bentran1vn/MBS-REVERSE_PROXY)
+- **MBS Library Repository**: [MBS-CONTRACT](https://github.com/bentran1vn/MBS-CONTRACT)
+
+
+
+
