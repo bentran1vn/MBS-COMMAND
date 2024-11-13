@@ -13,11 +13,14 @@ A platform designed to connect students with mentors, facilitating skill develop
 
 ## 2. Tech Stack
 
-### Backend ###: ASP.NET Core 8, EF Core, MediatR, RabbitMQ, MassTransit.
+### Backend: 
+ASP.NET Core 8, EF Core, MediatR, RabbitMQ, MassTransit.
 
-### Frontend ###: ReactJS, TypeScript, Tailwind CSS, Next.js
+### Frontend: 
+ReactJS, TypeScript, Tailwind CSS, Next.js
 
-### Mobile ###: Java for Android
+### Mobile: 
+Java for Android
 
 ### Deployment
 
