@@ -11,16 +11,16 @@ A platform designed to connect students with mentors, facilitating skill develop
 
 - **Admins**: Administrators oversee the system, configuring points awarded to students, managing and approving mentors, and monitoring the feedback from student-mentor interactions. This role ensures the quality and effectiveness of mentorship sessions and maintains the overall integrity of the system.
 
-## 2. Tech Stack
+## 1. Tech Stack
 
 ### Backend: 
-ASP.NET Core 8, EF Core, MediatR, RabbitMQ, MassTransit.
+- ASP.NET Core 8, EF Core, MediatR, RabbitMQ, MassTransit.
 
 ### Frontend: 
-ReactJS, TypeScript, Tailwind CSS, Next.js
+- ReactJS, TypeScript, Tailwind CSS, Next.js
 
 ### Mobile: 
-Java for Android
+- Java for Android
 
 ### Deployment
 
@@ -39,7 +39,7 @@ Java for Android
 
 - **Clean Architecture**: Modular and maintainable, facilitating easy scalability and testing.
 
-## 3. System Standout Features
+## 2. System Standout Features
 
 - **CQRS Pattern**: Separates read and write operations, with **MongoDB** dedicated to reads and **MSSQL Server** to writes.
 - **Repository Pattern**: Provides abstraction for reusable and testable data access.
