@@ -5,40 +5,19 @@
 
 A platform designed to connect students with mentors, facilitating skill development, project support, and guidance through structured mentorship. The system is tailored to meet the needs of three key user roles: **Students**, **Mentors**, and **Admins**, each with specific functions to ensure a seamless mentoring experience.
 
-## 1. User Roles and Features
+- **Students**: Students can manage their project groups, assign mentors to their projects based on required skills, and view their profile and performance points. MBS allows students to search for mentors with specific expertise, book mentorship sessions, and get valuable guidance for their projects.
 
-- **Students**: 
-  - Manage project groups and assign mentors based on skills.
-  - Search for mentors with specific expertise.
-  - View profile and performance points.
-  - Book mentorship sessions for project guidance.
+- **Mentors**: Mentors can showcase their skills and certifications, set and manage their schedules, and verify bookings from students. MBS also allows mentors to verify and manage group requests, providing a streamlined way to engage with students on specific project needs.
 
-- **Mentors**: 
-  - Showcase skills and certifications.
-  - Manage schedule and verify student bookings.
-  - Verify and manage group requests.
-
-- **Admins**: 
-  - Configure student points and approve mentors.
-  - Manage mentor profiles and oversee mentor-student interactions.
-  - View feedback from mentoring sessions to ensure quality.
+- **Admins**: Administrators oversee the system, configuring points awarded to students, managing and approving mentors, and monitoring the feedback from student-mentor interactions. This role ensures the quality and effectiveness of mentorship sessions and maintains the overall integrity of the system.
 
 ## 2. Tech Stack
 
-### Backend
-- ASP.NET Core 8
-- EF Core
-- MediatR
-- RabbitMQ
-- MassTransit
+### Backend ###: ASP.NET Core 8, EF Core, MediatR, RabbitMQ, MassTransit.
 
-### Frontend
-- ReactJS, TypeScript
-- Tailwind CSS
-- Next.js
+### Frontend ###: ReactJS, TypeScript, Tailwind CSS, Next.js
 
-### Mobile
-- Java for Android
+### Mobile ###: Java for Android
 
 ### Deployment
 
